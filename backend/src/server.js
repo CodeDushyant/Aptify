@@ -9,6 +9,10 @@ const PORT=process.env.PORT||3300;
 // middleware bodyparser for put or post request
 app.use(express.json());
 
+
+// import routes for examination website
+const examRoutes=require("./routes/mainRoutes");
+app.use('/api/v1',examRoutes);
 app.listen(PORT,()=>{
     console.log("App running ");
 });
