@@ -6,17 +6,24 @@ const router=express.Router();
 const {createQuestion}=require('../controllers/questionController');
 const {createExam}=require('../controllers/examController');
 const {signUp,login}=require('../Auth/AuthUser');
-const{createRanking}=require('../controllers/rankingController');
+const{getAllRanking}=require('../controllers/rankingController');
 const{auth,isStudent,isSuperAdmin,isDesignAdmin}=require('../middleware/Auth');
-const{createDesignAdmin}=require('../controllers/createDesignAdmin')
+const{createDesignAdmin}=require('../controllers/createDesignAdmin');
+const{resultController}=require('../controllers/resultController');
+const{submitExam}=require('../controllers/submitExam')
 // Step 3: Define Route
 router.post('/signup',signUp)
 router.post('/login',login)
-router.post('/createRanking',createRanking);
+// router.post('/createRanking',createRanking);
+router.get('/getAllRanking',getAllRanking);
 // Only DAdmin can access these
 router.post('/createQuestion', auth, isDesignAdmin, createQuestion);
 router.post('/createExam', auth, isDesignAdmin, createExam);
 router.post('/createDesignAdmin',auth,isSuperAdmin,createDesignAdmin);
+// student result controller
+router.get('/student/:studentId',resultController);
+router.post('/submitExam', auth, isStudent, submitExam);
+
 
 
 // protected Routes

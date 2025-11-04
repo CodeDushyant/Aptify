@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
-const rankingSchema = new mongoose.Schema({
+const resultSchema = new mongoose.Schema({
     studentId: {
         type: mongoose.Schema.Types.ObjectId, 
-        ref: "User", 
+        ref: "user", 
         required: true
     },
     examId: {
@@ -11,10 +11,10 @@ const rankingSchema = new mongoose.Schema({
         ref: "Exam",
         required: true
     },
-    score: {
+    marks: {
         type: Number,
         required: true
     }
 });
 
-module.exports = mongoose.model("Ranking", rankingSchema);
+module.exports = mongoose.model("Result", resultSchema);
