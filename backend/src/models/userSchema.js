@@ -15,10 +15,6 @@ const userSchema=new mongoose.Schema({
         type:String,
         required:true,
     },
-    marks:{
-        type:Number,
-        default:null
-        },
     rank:{
         type:Number,
         default:null
