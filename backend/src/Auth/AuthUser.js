@@ -10,6 +10,13 @@ require('dotenv').config();
 exports.signUp=async(req,res)=>{
     try{
         const {name,email,password,role,marks,rank}=req.body;
+        // Only Student can Sign Up
+        if (role && role !== "Student") {
+      return res.status(403).json({
+        success: false,
+        message: "You cannot register as Admin or SuperAdmin yourself",
+      });
+    }
         // Check if user already exists
         const existingUser = await user.findOne({ email });
         if (existingUser) {
