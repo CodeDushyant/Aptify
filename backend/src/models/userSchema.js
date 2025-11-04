@@ -7,18 +7,25 @@ const studentSchema=new mongoose.Schema({
     },
     email:{
         type:String,
-        required:true
+        required:true,
+        unique:true,
+        lowercase:true
     },
     password:{
         type:String,
         required:true,
     },
     marks:{
-        type:String,
-        required:true
-    },
+        type:Number,
+        default:null
+        },
     rank:{
         type:Number,
         default:null
+    },
+    role:{
+        type:String,
+        enum:["Admin","Student","DAdmin"],
+        default:"Student"
     }
-})
+},{timestamps:true})
