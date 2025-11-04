@@ -1,7 +1,8 @@
 // import bcrypt for hash
 const bcrypt=require('bcrypt');
+// const jwt = require('jsonwebtoken');
 // import models
-const user=require('../models/studentSchema');
+const user=require('../models/userSchema');
 
 
 // Sign up routes
@@ -9,7 +10,7 @@ exports.signUp=async(req,res)=>{
     try{
         const {name,email,password,role,marks,rank}=req.body;
         // Check if user already exists
-        const existingUser = await User.findOne({ email });
+        const existingUser = await user.findOne({ email });
         if (existingUser) {
             return res.status(400).json({
                 success: false,
@@ -19,21 +20,21 @@ exports.signUp=async(req,res)=>{
 
         // if user not exist
         // hashed the password
-        try{
+        // try{
             const hashedPassword=await bcrypt.hash(password,10);
-        }
-        catch(error){
-             res.status(500).json({
-                success:false,
-                message:"Hashing of the password failed"
-             });
-        }
+        // }
+        // catch(error){
+        //      res.status(500).json({
+        //         success:false,
+        //         message:"Hashing of the password failed"
+        //      });
+        // }
 
         // create entry for user
         const newuser={
                 name,
                 email,
-                password,
+                password:hashedPassword,
                 role,
         }
 
