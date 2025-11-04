@@ -5,7 +5,7 @@ const router=express.Router();
 // Step 2: Import Controller Function
 const {createQuestion}=require('../controllers/questionController');
 const {createExam}=require('../controllers/examController');
-const {signUp}=require('../Auth/AuthUser');
+const {signUp,login}=require('../Auth/AuthUser');
 
 
 
@@ -13,6 +13,7 @@ const {signUp}=require('../Auth/AuthUser');
 router.post('/createQuestion',createQuestion);
 router.post('/createExam',createExam);
 router.post('/signup',signUp)
+router.post('/login',login)
 
 // Step 4: Export Router
 module.exports=router;
