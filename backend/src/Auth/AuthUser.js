@@ -79,7 +79,7 @@ exports.login=async(req,res)=>{
         }
 
         // check that user entry present in database or not
-        const User=await user.findOne({email});
+        let User=await user.findOne({email});
         if(!User){
             return res.status(400).json({
                 success:false,
@@ -103,10 +103,13 @@ exports.login=async(req,res)=>{
                     expiresIn:"2h"
                 }
             )
-
+            User=User.toObject();
+            console.log(User);
             User.token=token;
+            console.log(User);
             User.password=undefined;
 
+            console.log(User);
             // option for cookies
             const options={
                 expire:new Date(Date.now()+3*24*60*60*1000),
