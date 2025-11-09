@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AptitudePro - Student Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* 1. Basic Reset & Setup */
+        :root {
+            --primary-color: #79ACE9;
+            --secondary-color: #50E3C2;
+            --dark-bg: #1a1a2e;
+            --card-bg: #21213b;
+            --text-light: #e0e0e0;
+            --text-lighter: #f0f0f0;
+            --border-color: #3a3a5e;
+            --button-hover-bg: #3f3f6e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 2. Navigation Bar */
+        .navbar {
+            background: var(--dark-bg);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .navbar .nav-links a {
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .navbar .nav-links a:hover {
+            color: var(--primary-color);
+        }
+        
+        /* 3. Buttons */
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        .btn-cta {
+            background: var(--secondary-color);
+            color: var(--dark-bg);
+            padding: 0.9rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(80, 227, 194, 0.4);
+        }
+
+        .btn-cta:hover {
+            transform: scale(1.05) translateY(-3px);
+            box-shadow: 0 8px 25px rgba(80, 227, 194, 0.6);
+        }
+
+        .navbar .auth-buttons {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+        }
+        
+        /* Profile Link (Navbar) */
+        .navbar .profile-link {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .navbar .profile-link:hover {
+            color: var(--primary-color);
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        /* 4. Responsive Design */
+        @media(max-width: 768px) {
+            .navbar .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 65px;
+                left: 0;
+                width: 100%;
+                background: var(--dark-bg);
+                box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+                padding: 1rem 0;
+                border-top: 1px solid var(--border-color);
+            }
+
+            .navbar .nav-links.active {
+                display: flex;
+            }
+
+            .navbar .nav-links li {
+                width: 100%;
+                text-align: center;
+                padding: 0.5rem 0;
+            }
+
+            .navbar .nav-links a {
+                display: block;
+            }
+
+            .navbar .auth-buttons {
+                display: none;
+            }
+
+            .navbar .auth-buttons.active {
+                display: flex;
+                flex-direction: column;
+                width: 90%;
+                margin: 0 auto;
+                gap: 1rem;
+                padding-top: 1rem;
+            }
+
+            .navbar .auth-buttons .btn,
+            .navbar .auth-buttons .profile-link {
+                width: 100%;
+                text-align: center;
+                padding: 0.5rem 0;
+            }
+
+            .hamburger {
+                display: block;
+            }
+        }
+
+        /* ============================================ */
+        /* === 5. DASHBOARD PAGE STYLES === */
+        /* ============================================ */
+        
+        main {
+            padding: 2rem 0;
+        }
+        
+        .dashboard-welcome {
+            margin-bottom: 2rem;
+        }
+        
+        .dashboard-welcome h1 {
+            color: var(--text-lighter);
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .dashboard-welcome p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .dash-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dash-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        /* Stats Grid (Progress & Exam Count) */
+        .stat-summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .stat-card {
+            background: var(--dark-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .stat-card h4 {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-card p {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-lighter);
+        }
+        
+        /* CTA Card (Attend Exam) */
+        .cta-card {
+            background: linear-gradient(135deg, #1e3a8a, #4a0e4e);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--text-lighter);
+        }
+        
+        .cta-card h3 {
+            color: var(--text-lighter);
+            border: none;
+        }
+        
+        .cta-card p {
+            margin-bottom: 1.5rem;
+        }
+        
+        /* List Styles (Leaderboard, Results, Exams) */
+        .dash-card ul, .dash-card ol {
+            list-style: none;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        /* Custom Scrollbar */
+        .dash-card ul::-webkit-scrollbar, 
+        .dash-card ol::-webkit-scrollbar {
+          width: 6px;
+        }
+        .dash-card ul::-webkit-scrollbar-thumb,
+        .dash-card ol::-webkit-scrollbar-thumb {
+          background: var(--border-color);
+          border-radius: 10px;
+        }
+        .dash-card ul::-webkit-scrollbar-track,
+        .dash-card ol::-webkit-scrollbar-track {
+          background: var(--dark-bg);
+          border-radius: 10px;
+        }
+
+        .dash-card li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .dash-card li:last-child {
+            border-bottom: none;
+        }
+        
+        /* Leaderboard specific */
+        .leaderboard ol {
+            counter-reset: ranking;
+        }
+        .leaderboard li::before {
+            counter-increment: ranking;
+            content: "#" counter(ranking);
+            font-weight: 700;
+            color: var(--primary-color);
+            min-width: 30px;
+        }
+        .leaderboard .rank-score {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+        .leaderboard .you {
+            color: var(--secondary-color);
+            font-weight: 700;
+            background: rgba(80, 227, 194, 0.1);
+            border-radius: 5px;
+            padding: 0.8rem;
+            margin: 0.5rem -0.8rem;
+        }
+        
+        /* Results History specific */
+        .result-score {
+            font-weight: 600;
+            color: var(--text-lighter);
+        }
+        .result-score .pass { color: #50E3C2; }
+        .result-score .fail { color: #E35050; }
+        
+        /* Exam List specific */
+        .exam-list .btn-attend {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+            text-decoration: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .exam-list .btn-attend:hover {
+            opacity: 0.8;
+        }
+        
+        /* ============================================ */
+        /* === 6. MODAL (POPUP) STYLES === */
+        /* ============================================ */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .modal-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 2.5rem;
+            width: 90%;
+            max-width: 400px;
+            color: var(--text-lighter);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            transform: scale(0.95);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 2.2rem;
+            color: var(--text-light);
+            cursor: pointer;
+        }
+
+        .modal-card h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--text-lighter);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            color: var(--text-lighter);
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(121, 172, 233, 0.5);
+        }
+
+        .btn-modal {
+            width: 100%;
+            padding: 0.8rem;
+            font-size: 1rem;
+            background: var(--secondary-color);
+            color: var(--dark-bg);
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        .modal-switch-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .modal-switch-link a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo">AptitudePro</a>
+            <div class="hamburger" id="hamburger-menu">&#9776;</div>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Our Services</a></li>
+                <li class="auth-placeholder"></li>
+            </ul>
+            
+            <div class="auth-buttons" id="auth-buttons">
+                <a href="#" class="profile-link">My Profile</a>
+                <a href="#" class="btn btn-secondary" id="logout-button">Logout</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <section class="dashboard-welcome container">
+        <h1>Welcome back, Student!</h1>
+        <p>Yahan aap apni progress track kar sakte hain aur naye test de sakte hain.</p>
+    </section>
+    
+    <section class="dashboard-grid container">
+    
+        <div class="dash-card">
+            <h3>Aapki Progress</h3>
+            <div class="stat-summary-grid">
+                <div class="stat-card">
+                    <h4>Total Exams Diye</h4>
+                    <p>12</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Average Score</h4>
+                    <p>78%</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dash-card cta-card">
+            <h3>Naya Test Shuru Karein</h3>
+            <p>Apni skills ko test karne ke liye taiyaar hain?</p>
+            <a href="#" class="btn btn-cta">Start New Exam</a>
+        </div>
+    
+        <div class="dash-card leaderboard">
+            <h3>Student Ranking</h3>
+            <ol>
+                <li>
+                    <span>Rohan Sharma</span>
+                    <span class="rank-score">95%</span>
+                </li>
+                <li>
+                    <span>Priya Singh</span>
+                    <span class="rank-score">92%</span>
+                </li>
+                <li class="you">
+                    <span>Aap (Student)</span>
+                    <span class="rank-score">78%</span>
+                </li>
+                <li>
+                    <span>Amit Kumar</span>
+                    <span class="rank-score">75%</span>
+                </li>
+                <li>
+                    <span>Sneha Patil</span>
+                    <span class="rank-score">70%</span>
+                </li>
+            </ol>
+        </div>
+        
+        <div class="dash-card results-history">
+            <h3>Previous Exam Results</h3>
+            <ul>
+                <li>
+                    <span>Quantitative Aptitude - Set 5</span>
+                    <span class="result-score pass">85% (Pass)</span>
+                </li>
+                <li>
+                    <span>Logical Reasoning - Set 2</span>
+                    <span class="result-score fail">55% (Fail)</span>
+                </li>
+                <li>
+                    <span>Verbal Ability - Set 1</span>
+                    <span class="result-score pass">90% (Pass)</span>
+                </li>
+                <li>
+                    <span>Quantitative Aptitude - Set 4</span>
+                    <span class="result-score pass">72% (Pass)</span>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="dash-card exam-list">
+            <h3>Sare Exam Sets</h3>
+            <ul>
+                <li>
+                    <span>Quantitative Aptitude - Set 1</span>
+                    <a href="#" class="btn-attend">Attend</a>
+                </li>
+                <li>
+                    <span>Quantitative Aptitude - Set 2</span>
+                    <a href="#" class="btn-attend">Attend</a>
+                </li>
+                <li>
+                    <span>Logical Reasoning - Set 1</span>
+                    <a href="#" class="btn-attend">Attend</a>
+                </li>
+                <li>
+                    <span>Verbal Ability - Set 3</span>
+                    <a href="#" class="btn-attend">Attend</a>
+                </li>
+                <li>
+                    <span>Mixed Mock Test - 1</span>
+                    <a href="#" class="btn-attend">Attend</a>
+                </li>
+            </ul>
+        </div>
+    
+    </section>
+</main>
+
+<div class="modal-overlay" id="login-modal">
+    <div class="modal-card">
+        <span class="close-modal">&times;</span>
+        <h2>Login</h2>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="login-email">Email</label>
+                <input type="email" id="login-email" required>
+            </div>
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" required>
+            </div>
+            <button type="submit" class="btn btn-modal">Login</button>
+            <p class="modal-switch-link">
+                Account nahi hai? <a href="#" id="switch-to-signup">Sign Up</a>
+            </p>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="signup-modal">
+    <div class="modal-card">
+        <span class="close-modal">&times;</span>
+        <h2>Sign Up</h2>
+        <form id="signup-form">
+            <div class="form-group">
+                <label for="signup-email">Email</label>
+                <input type="email" id="signup-email" required>
+            </div>
+            <div class="form-group">
+                <label for="signup-password">Password</label>
+                <input type="password" id="signup-password" required>
+            </div>
+            <div class="form-group">
+                <label for="signup-confirm-password">Confirm Password</label>
+                <input type="password" id="signup-confirm-password" required>
+            </div>
+            <button type="submit" class="btn btn-modal">Create Account</button>
+            <p class="modal-switch-link">
+                Pehle se account hai? <a href="#" id="switch-to-login">Login</a>
+            </p>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    
+    /* --- Responsive Menu Code --- */
+    const hamburgerMenu = document.getElementById('hamburger-menu');
+    const navLinks = document.getElementById('nav-links');
+    const authButtons = document.getElementById('auth-buttons');
+    const authPlaceholder = navLinks.querySelector('.auth-placeholder');
+
+    function checkScreenSize() {
+        if (window.innerWidth <= 768) {
+            if (authPlaceholder && authButtons && !authPlaceholder.contains(authButtons)) {
+                authPlaceholder.appendChild(authButtons);
+                authButtons.classList.add('active');
+            }
+        } else {
+            const container = document.querySelector('.navbar .container');
+            if (authPlaceholder && authButtons && authPlaceholder.contains(authButtons)) {
+                container.appendChild(authButtons);
+                authButtons.classList.remove('active');
+            }
+            navLinks.classList.remove('active');
+        }
+    }
+
+    hamburgerMenu.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+    });
+
+    window.addEventListener('resize', checkScreenSize);
+    checkScreenSize();
+
+    /* --- Modal (Popup) Code --- */
+    const loginModal = document.getElementById('login-modal');
+    const signupModal = document.getElementById('signup-modal');
+    
+    const closeButtons = document.querySelectorAll('.close-modal');
+    const switchToSignup = document.getElementById('switch-to-signup');
+    const switchToLogin = document.getElementById('switch-to-login');
+
+    function openModal(modal) {
+        if (modal) modal.classList.add('active');
+    }
+
+    function closeModal(modal) {
+        if (modal) modal.classList.remove('active');
+    }
+
+    closeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            closeModal(button.closest('.modal-overlay'));
+        });
+    });
+
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                closeModal(overlay);
+            }
+        });
+    });
+
+    if (switchToSignup) {
+        switchToSignup.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeModal(loginModal);
+            openModal(signupModal);
+        });
+    }
+
+    if (switchToLogin) {
+        switchToLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeModal(signupModal);
+            openModal(loginModal);
+        });
+    }
+});
+</script>
+
+</body>
+</html>
