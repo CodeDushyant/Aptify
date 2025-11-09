@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Portal Prototype</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide-react@0.395.0/dist/lucide-react.js"></script>
+    <script src="https://unpkg.com/lucide-react@0.395.0/dist/lucide-react.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        [data-page] {
+            display: none;
+        }
+        [data-page].active {
+            display: block;
+        }
+        /* Custom scrollbar for question palette */
+        .question-palette::-webkit-scrollbar {
+            width: 6px;
+        }
+        .question-palette::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .question-palette::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .question-palette::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800">
+
+    <!-- Main Header (Appears on most pages) -->
+    <header id="main-header" class="bg-white shadow-md w-full py-4 px-6 md:px-10 hidden">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-600"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
+                <span class="text-xl font-bold text-slate-900">ExamPortal</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <span id="user-greeting" class="text-slate-600 hidden md:inline"></span>
+                <button onclick="logout()" class="text-slate-600 hover:text-blue-600 font-medium flex items-center gap-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" x2="9" y1="12" y2="12"></line></svg>
+                    Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page: Login -->
+    <div id="page-login" data-page class="active min-h-screen flex items-center justify-center bg-slate-100 p-4">
+        <div class="w-full max-w-md bg-white p-8 md:p-10 rounded-xl shadow-2xl">
+            <div class="flex justify-center mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-600"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
+            </div>
+            <h2 class="text-2xl font-bold text-center text-slate-900 mb-2">Welcome Back</h2>
+            <p class="text-center text-slate-500 mb-8">Sign in to start your exam</p>
+            <form id="login-form">
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-medium text-slate-700 mb-2">Email</label>
+                    <input type="email" id="email" value="student@example.com" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="you@example.com" required>
+                </div>
+                <div class="mb-6">
+                    <label for="password" class="block text-sm font-medium text-slate-700 mb-2">Password</label>
+                    <input type="password" id="password" value="password123" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:bg-blue-700 transition-colors duration-300 ease-in-out">
+                    Login
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Page: Dashboard (Exam List) -->
+    <div id="page-dashboard" data-page class="min-h-screen">
+        <!-- New Dashboard Content -->
+        <div class="max-w-7xl mx-auto p-4 md:p-8">
+            
+            <!-- Welcome Banner -->
+            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-slate-200 mb-8">
+                <h1 id="dashboard-greeting" class="text-3xl font-bold text-slate-900 mb-2">Welcome back, Student!</h1>
+                <p class="text-lg text-slate-600">You're one step closer to your goals. Keep up the great work.</p>
+            </div>
+
+            <!-- Main Layout: Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- Main Content (Left) -->
+                <div class="lg:col-span-2 space-y-8">
+                    
+                    <!-- Quick Stats -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Stat Card 1: Active Exams -->
+                        <div class="bg-white p-5 rounded-xl shadow-md border border-slate-200 flex items-center gap-4">
+                            <div class="p-3 bg-blue-100 rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-600"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
+                            </div>
+                            <div>
+                                <span class="text-sm text-slate-500">Active Exams</span>
+                                <p class="text-2xl font-bold text-slate-900">2</p>
+                            </div>
+                        </div>
+                        <!-- Stat Card 2: Completed -->
+                        <div class="bg-white p-5 rounded-xl shadow-md border border-slate-200 flex items-center gap-4">
+                            <div class="p-3 bg-green-100 rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600"><path d="m22 10-7.5 7.5L13 16"></path><path d="M22 10V5l-5 5"></path><path d="M11 10.5 8 7.5l-6 6"></path><path d="m2 14 6-6"></path></svg>
+                            </div>
+                            <div>
+                                <span class="text-sm text-slate-500">Completed</span>
+                                <p class="text-2xl font-bold text-slate-900">5</p>
+                            </div>
+                        </div>
+                        <!-- Stat Card 3: Progress -->
+                        <div class="bg-white p-5 rounded-xl shadow-md border border-slate-200 flex items-center gap-4">
+                            <div class="p-3 bg-yellow-100 rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-600"><line x1="12" x2="12" y1="20" y2="10"></line><line x1="18" x2="18" y1="20" y2="4"></line><line x1="6" x2="6" y1="20" y2="16"></line></svg>
+                            </div>
+                            <div>
+                                <span class="text-sm text-slate-500">Your Progress</span>
+                                <p class="text-2xl font-bold text-slate-900">75%</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Available Exams (The old list) -->
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 mb-6">Available Exams</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            
+                            <!-- Exam Card 1 (Copied from original) -->
+                            <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <div class="p-3 bg-blue-100 rounded-lg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-600"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
+                                    </div>
+                                    <h2 class="text-xl font-semibold text-slate-900">Modern Physics 101</h2>
+                                </div>
+                                <p class="text-slate-600 mb-5">Test your knowledge of quantum mechanics and relativity.</p>
+                                <div class="flex justify-between items-center mb-5">
+                                    <div class="text-sm">
+                                        <span class="font-medium text-slate-700">Questions:</span>
+                                        <span class="text-slate-500">20</span>
+                                    </div>
+                                    <div class="text-sm">
+                                        <span class="font-medium text-slate-700">Duration:</span>
+                                        <span class="text-slate-500">30 mins</span>
+                                    </div>
+                                </div>
+                                <button onclick="startExam('physics')" class="w-full bg-blue-600 text-white font-bold py-2.5 px-4 rounded-lg shadow-md hover:bg-blue-700 transition-colors">
+                                    Start Exam
+                                </button>
+                            </div>
+
+                            <!-- Exam Card 2 (Copied from original) -->
+                            <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <div class="p-3 bg-green-100 rounded-lg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                                    </div>
+                                    <h2 class="text-xl font-semibold text-slate-900">Calculus II</h2>
+                                </div>
+                                <p class="text-slate-600 mb-5">Derivatives, integrals, and series. Show your work!</p>
+                                <div class="flex justify-between items-center mb-5">
+                                    <div class="text-sm">
+                                        <span class="font-medium text-slate-700">Questions:</span>
+                                        <span class="text-slate-500">15</span>
+                                    </div>
+                                    <div class="text-sm">
+                                        <span class="font-medium text-slate-700">Duration:</span>
+                                        <span class="text-slate-500">45 mins</span>
+                                    </div>
+                                </div>
+                                <button onclick="startExam('calculus')" class="w-full bg-blue-600 text-white font-bold py-2.5 px-4 rounded-lg shadow-md hover:bg-blue-700 transition-colors">
+                                    Start Exam
+                                </button>
+                            </div>
+
+                            <!-- Exam Card 3 (Copied from original) -->
+                            <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200 opacity-60">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <div class="p-3 bg-slate-100 rounded-lg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-500"><path d="M21.2 21.2 3 3l18.2 18.2z"></path><path d="M8.5 8.5 7 7l-4.5 4.5 1.5 1.5"></path><path d="m11 11 1.5 1.5"></path><path d="M14 14.5 17 17l4.5-4.5-1.5-1.5"></path></svg>
+                                    </div>
+                                    <h2 class="text-xl font-semibold text-slate-900">Data Structures</h2>
+                                </div>
+                                <p class="text-slate-600 mb-5">Arrays, linked lists, trees, and graphs.</p>
+                                <div class="flex justify-between items-center mb-5">
+                                    <div class="text-sm">
+                                        <span class="font-medium text-slate-700">Questions:</span>
+                                        <span class="text-slate-500">25</span>
+                                    </div>
+                                    <div class="text-sm">
+                                        <span class="font-medium text-slate-700">Duration:</span>
+                                        <span class="text-slate-500">60 mins</span>
+                                    </div>
+                                </div>
+                                <button class="w-full bg-slate-400 text-white font-bold py-2.5 px-4 rounded-lg cursor-not-allowed" disabled>
+                                    Not Yet Available
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar (Right) -->
+                <aside class="lg:col-span-1 space-y-8">
+                    
+                    <!-- Upcoming Deadlines -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                        <h3 class="text-xl font-semibold text-slate-900 mb-5">Upcoming Deadlines</h3>
+                        <ul class="space-y-4">
+                            <!-- Deadline Item 1 -->
+                            <li class="flex items-center gap-4">
+                                <div class="bg-red-100 text-red-700 font-bold p-3 rounded-lg flex flex-col items-center w-16">
+                                    <span class="text-xs uppercase">NOV</span>
+                                    <span class="text-xl leading-none">10</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-slate-800">Calculus II</h4>
+                                    <p class="text-sm text-slate-500">Submission due 11:59 PM</p>
+                                </div>
+                            </li>
+                            <!-- Deadline Item 2 -->
+                            <li class="flex items-center gap-4">
+                                <div class="bg-slate-100 text-slate-700 font-bold p-3 rounded-lg flex flex-col items-center w-16">
+                                    <span class="text-xs uppercase">NOV</span>
+                                    <span class="text-xl leading-none">12</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-slate-800">Modern Physics 101</h4>
+                                    <p class="text-sm text-slate-500">Exam window closes</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- My Progress -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                        <h3 class="text-xl font-semibold text-slate-900 mb-5">My Progress</h3>
+                        <!-- Simple static bar chart UI -->
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between text-sm font-medium mb-1">
+                                    <span>Physics</span>
+                                    <span class="text-slate-500">80%</span>
+                                </div>
+                                <div class="w-full bg-slate-200 rounded-full h-2.5">
+                                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: 80%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm font-medium mb-1">
+                                    <span>Calculus</span>
+                                    <span class="text-slate-500">60%</span>
+                                </div>
+                                <div class="w-full bg-slate-200 rounded-full h-2.5">
+                                    <div class="bg-green-600 h-2.5 rounded-full" style="width: 60%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm font-medium mb-1">
+                                    <span>Data Structures</span>
+                                    <span class="text-slate-500">0%</span>
+                                </div>
+                                <div class="w-full bg-slate-200 rounded-full h-2.5">
+                                    <div class="bg-slate-400 h-2.5 rounded-full" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </aside>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page: Exam Instructions -->
+    <div id="page-instructions" data-page class="min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-3xl w-full bg-white p-8 md:p-10 rounded-xl shadow-2xl">
+            <h1 id="instructions-title" class="text-3xl font-bold text-slate-900 text-center mb-6">Exam Instructions</h1>
+            <div class="prose prose-slate max-w-none text-slate-600 mb-8">
+                <p>Please read the following instructions carefully before you begin the exam:</p>
+                <ul>
+                    <li>The exam consists of <strong id="instructions-questions"></strong> multiple-choice questions.</li>
+                    <li>The total duration of the exam is <strong id="instructions-duration"></strong>.</li>
+                    <li>A timer will be displayed at the top right corner of your screen.</li>
+                    <li>You can navigate between questions using the "Next" and "Previous" buttons.</li>
+                    <li>You can use the question palette on the right to jump to any question.</li>
+                    <li>You can "Mark for Review" any question you wish to revisit later.</li>
+                    <li>Your exam will be automatically submitted when the time runs out.</li>
+                    <li>Do not close the browser window or refresh the page during the exam.</li>
+                </ul>
+                <p class="font-semibold text-slate-800">Click "Start Test" to begin. Good luck!</p>
+            </div>
+            <div class="flex justify-center gap-4">
+                <button onclick="showPage('page-dashboard')" class="bg-slate-200 text-slate-800 font-bold py-3 px-6 rounded-lg shadow-md hover:bg-slate-300 transition-colors">
+                    Back to Dashboard
+                </button>
+                <button onclick="beginTest()" class="bg-green-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-green-700 transition-colors">
+                    Start Test
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page: Exam Taking -->
+    <div id="page-exam" data-page class="min-h-screen p-4 md:p-6 lg:p-8">
+        <!-- Exam Header -->
+        <div class="bg-white p-4 rounded-xl shadow-lg mb-6">
+            <div class="max-w-full mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+                <h1 id="exam-title" class="text-xl md:text-2xl font-bold text-slate-900">Modern Physics 101</h1>
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2 bg-red-100 text-red-700 font-bold py-2 px-4 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        <span>Time Left:</span>
+                        <span id="timer">30:00</span>
+                    </div>
+                    <button onclick="confirmSubmit()" class="bg-red-600 text-white font-bold py-2 px-5 rounded-lg shadow-md hover:bg-red-700 transition-colors">
+                        Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Exam Layout (Question + Palette) -->
+        <div class="flex flex-col lg:flex-row gap-6">
+            
+            <!-- Main Question Area -->
+            <div class="flex-1 bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                <!-- Question Info -->
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-slate-900">
+                        Question <span id="question-number">1</span> of <span id="question-total">20</span>
+                    </h2>
+                    <span class="text-sm font-medium text-blue-600 bg-blue-100 py-1 px-3 rounded-full">Multiple Choice</span>
+                </div>
+
+                <!-- Question Text -->
+                <div id="question-text" class="text-lg text-slate-700 mb-8 leading-relaxed">
+                    What is the particle-wave duality?
+                </div>
+
+                <!-- Options -->
+                <div id="options-container" class="space-y-4">
+                    <!-- Options will be dynamically inserted here -->
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="mt-10 pt-6 border-t border-slate-200 flex justify-between items-center">
+                    <button onclick="navigateQuestion('prev')" id="prev-btn" class="bg-slate-200 text-slate-800 font-bold py-2.5 px-6 rounded-lg shadow-md hover:bg-slate-300 transition-colors">
+                        Previous
+                    </button>
+                    <button onclick="toggleMarkForReview()" id="mark-btn" class="text-blue-600 font-medium py-2.5 px-5 rounded-lg hover:bg-blue-50 transition-colors flex items-center gap-2">
+                        <svg id="mark-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span id="mark-text">Mark for Review</span>
+                    </button>
+                    <button onclick="navigateQuestion('next')" id="next-btn" class="bg-blue-600 text-white font-bold py-2.5 px-6 rounded-lg shadow-md hover:bg-blue-700 transition-colors">
+                        Next
+                    </button>
+                </div>
+            </div>
+
+            <!-- Question Palette (Sidebar) -->
+            <aside class="w-full lg:w-72 xl:w-80">
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="text-lg font-semibold text-slate-900 mb-4">Question Palette</h3>
+                    <div id="question-palette" class="grid grid-cols-5 gap-3 max-h-80 overflow-y-auto pr-2 question-palette">
+                        <!-- Palette buttons will be dynamically inserted here -->
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-200 space-y-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-md bg-green-500 border border-green-600"></span>
+                            <span class="text-sm text-slate-600">Answered</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-md bg-red-500 border border-red-600"></span>
+                            <span class="text-sm text-slate-600">Not Answered</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-md bg-blue-500 border border-blue-600"></span>
+                            <span class="text-sm text-slate-600">Marked for Review</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-md bg-white border-2 border-slate-400"></span>
+                            <span class="text-sm text-slate-600">Not Visited</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+    
+    <!-- Page: Results -->
+    <div id="page-results" data-page class="min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-2xl w-full bg-white p-8 md:p-10 rounded-xl shadow-2xl text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-500 mx-auto mb-5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            <h1 class="text-3xl font-bold text-slate-900 mb-4">Exam Submitted Successfully!</h1>
+            <p class="text-lg text-slate-600 mb-8">Thank you for completing the exam. Here is your preliminary score.</p>
+            <div classs="my-10">
+                <p class="text-xl text-slate-700 mb-2">You Scored:</p>
+                <h2 class="text-6xl font-extrabold text-blue-600">
+                    <span id="final-score">15</span> / <span id="total-score">20</span>
+                </h2>
+            </div>
+            <button onclick="showPage('page-dashboard')" class="mt-10 bg-blue-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-blue-700 transition-colors">
+                Back to Dashboard
+            </button>
+        </div>
+    </div>
+    
+    <!-- Modal: Submit Confirmation -->
+    <div id="modal-submit" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white max-w-lg w-full p-8 rounded-xl shadow-2xl">
+            <div class="flex justify-center mb-5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-500"><path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" x2="12" y1="9" y2="13"></line><line x1="12" x2="12.01" y1="17" y2="17"></line></svg>
+            </div>
+            <h2 class="text-2xl font-bold text-slate-900 text-center mb-4">Confirm Submission</h2>
+            <p class="text-slate-600 text-center mb-8">
+                Are you sure you want to submit your exam? You will not be able to change your answers after this.
+            </p>
+            <div id="submit-summary" class="text-center mb-8 space-y-2">
+                <p class="text-lg font-medium">Answered: <span id="summary-answered" class="text-green-600">0</span></p>
+                <p class="text-lg font-medium">Not Answered: <span id="summary-not-answered" class="text-red-600">0</span></p>
+                <p class="text-lg font-medium">Marked for Review: <span id="summary-marked" class="text-blue-600">0</span></p>
+            </div>
+            <div class="flex justify-center gap-4">
+                <button onclick="closeModal('modal-submit')" class="bg-slate-200 text-slate-800 font-bold py-2.5 px-6 rounded-lg shadow-md hover:bg-slate-300 transition-colors">
+                    Cancel
+                </button>
+                <button onclick="submitExam()" class="bg-red-600 text-white font-bold py-2.5 px-6 rounded-lg shadow-lg hover:bg-red-700 transition-colors">
+                    Confirm Submit
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- MOCK DATA ---
+        const mockExams = {
+            physics: {
+                id: 'physics',
+                title: 'Modern Physics 101',
+                duration: 1800, // 30 minutes in seconds
+                questions: [
+                    {
+                        text: "What principle states that one cannot simultaneously know the exact position and momentum of a particle?",
+                        options: ["Heisenberg's Uncertainty Principle", "Pauli Exclusion Principle", "Schrödinger's Equation", "Photoelectric Effect"],
+                        answer: "Heisenberg's Uncertainty Principle"
+                    },
+                    {
+                        text: "Who proposed the theory of general relativity?",
+                        options: ["Isaac Newton", "Niels Bohr", "Albert Einstein", "Max Planck"],
+                        answer: "Albert Einstein"
+                    },
+                    {
+                        text: "What is a quantum of light called?",
+                        options: ["Electron", "Proton", "Neutron", "Photon"],
+                        answer: "Photon"
+                    },
+                    // Add more questions...
+                    { text: "What phenomenon demonstrates the particle nature of light?", options: ["Diffraction", "Interference", "Photoelectric Effect", "Refraction"], answer: "Photoelectric Effect" },
+                    { text: "What does 'c' represent in E=mc²?", options: ["Charge", "Speed of light", "Wavelength", "Frequency"], answer: "Speed of light" },
+                    { text: "Which of these is NOT a fundamental force?", options: ["Gravity", "Electromagnetism", "Centrifugal Force", "Strong Nuclear Force"], answer: "Centrifugal Force" },
+                    { text: "What is the study of the universe's origin and evolution called?", options: ["Astrophysics", "Cosmology", "Astronomy", "Quantum Mechanics"], answer: "Cosmology" },
+                    { text: "What is the half-life of a radioactive substance?", options: ["Half the time it exists", "Time for half its atoms to decay", "Its average lifespan", "The time to lose half its mass"], answer: "Time for half its atoms to decay" },
+                    { text: "What is the purpose of a particle accelerator?", options: ["To store energy", "To slow down particles", "To study subatomic particles", "To create electricity"], answer: "To study subatomic particles" },
+                    { text: "What is the particle-wave duality?", options: ["Particles can be waves", "Waves can be particles", "Both A and B", "Neither A nor B"], answer: "Both A and B" },
+                    // 10 more dummy questions
+                    { text: "Q11", options: ["A", "B", "C", "D"], answer: "A" },
+                    { text: "Q12", options: ["A", "B", "C", "D"], answer: "B" },
+                    { text: "Q13", options: ["A", "B", "C", "D"], answer: "C" },
+                    { text: "Q14", options: ["A", "B", "C", "D"], answer: "D" },
+                    { text: "Q15", options: ["A", "B", "C", "D"], answer: "A" },
+                    { text: "Q16", options: ["A", "B", "C", "D"], answer: "B" },
+                    { text: "Q17", options: ["A", "B", "C", "D"], answer: "C" },
+                    { text: "Q18", options: ["A", "B", "C", "D"], answer: "D" },
+                    { text: "Q19", options: ["A", "B", "C", "D"], answer: "A" },
+                    { text: "Q20", options: ["A", "B", "C", "D"], answer: "B" },
+                ]
+            },
+            calculus: {
+                id: 'calculus',
+                title: 'Calculus II',
+                duration: 2700, // 45 minutes
+                questions: [
+                    {
+                        text: "What is the derivative of x²?",
+                        options: ["2x", "x³/3", "x", "2"],
+                        answer: "2x"
+                    },
+                    {
+                        text: "What is the integral of 1/x dx?",
+                        options: ["ln|x| + C", "1/x² + C", "-1/x² + C", "1 + C"],
+                        answer: "ln|x| + C"
+                    },
+                    // Add more questions...
+                    { text: "Q3", options: ["A", "B", "C", "D"], answer: "C" },
+                    { text: "Q4", options: ["A", "B", "C", "D"], answer: "D" },
+                    { text: "Q5", options: ["A", "B", "C", "D"], answer: "A" },
+                    { text: "Q6", options: ["A", "B", "C", "D"], answer: "B" },
+                    { text: "Q7", options: ["A", "B", "C", "D"], answer: "C" },
+                    { text: "Q8", options: ["A", "B", "C", "D"], answer: "D" },
+                    { text: "Q9", options: ["A", "B", "C", "D"], answer: "A" },
+                    { text: "Q10", options: ["A", "B", "C", "D"], answer: "B" },
+                    { text: "Q11", options: ["A", "B", "C", "D"], answer: "A" },
+                    { text: "Q12", options: ["A", "B", "C", "D"], answer: "B" },
+                    { text: "Q13", options: ["A", "B", "C", "D"], answer: "C" },
+                    { text: "Q14", options: ["A", "B", "C", "D"], answer: "D" },
+                    { text: "Q15", options: ["A", "B", "C", "D"], answer: "A" },
+                ]
+            }
+        };
+
+        // --- APP STATE ---
+        let currentPage = 'page-login';
+        let currentExam = null;
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let questionStatus = []; // 'not-visited', 'not-answered', 'answered', 'marked'
+        let timerInterval = null;
+        let timeLeft = 0;
+
+        // --- ENUMS for status ---
+        const Q_STATUS = {
+            NOT_VISITED: 'not-visited',
+            NOT_ANSWERED: 'not-answered',
+            ANSWERED: 'answered',
+            MARKED: 'marked',
+        };
+
+        // --- PAGE NAVIGATION ---
+        function showPage(pageId) {
+            document.querySelectorAll('[data-page]').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            currentPage = pageId;
+            
+            // Show/hide main header
+            const header = document.getElementById('main-header');
+            if (pageId === 'page-login' || pageId === 'page-exam') {
+                header.classList.add('hidden');
+            } else {
+                header.classList.remove('hidden');
+            }
+        }
+
+        // --- AUTH LOGIC ---
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            // Add your real auth logic here
+            const studentName = email.split('@')[0]; // Simple name from email
+            const formattedName = studentName.charAt(0).toUpperCase() + studentName.slice(1);
+            
+            document.getElementById('user-greeting').textContent = `Hello, ${formattedName}`;
+            // New line for the dashboard greeting
+            document.getElementById('dashboard-greeting').textContent = `Welcome back, ${formattedName}!`;
+
+            showPage('page-dashboard');
+        });
+
+        function logout() {
+            // Add real logout logic
+            document.getElementById('email').value = "student@example.com";
+            document.getElementById('password').value = "password123";
+            showPage('page-login');
+        }
+
+        // --- EXAM FLOW ---
+        function startExam(examId) {
+            currentExam = mockExams[examId];
+            if (!currentExam) return;
+
+            // Populate instructions
+            document.getElementById('instructions-title').textContent = `${currentExam.title} - Instructions`;
+            document.getElementById('instructions-questions').textContent = currentExam.questions.length;
+            document.getElementById('instructions-duration').textContent = `${currentExam.duration / 60} minutes`;
+            
+            showPage('page-instructions');
+        }
+
+        function beginTest() {
+            // Reset exam state
+            currentQuestionIndex = 0;
+            userAnswers = new Array(currentExam.questions.length).fill(null);
+            questionStatus = new Array(currentExam.questions.length).fill(Q_STATUS.NOT_VISITED);
+            
+            // Set first question as not-answered (since we visit it)
+            questionStatus[0] = Q_STATUS.NOT_ANSWERED;
+
+            timeLeft = currentExam.duration;
+
+            // Populate exam page
+            document.getElementById('exam-title').textContent = currentExam.title;
+            document.getElementById('question-total').textContent = currentExam.questions.length;
+
+            loadQuestion(currentQuestionIndex);
+            renderPalette();
+            startTimer();
+            showPage('page-exam');
+        }
+
+        // --- TIMER LOGIC ---
+        function startTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            const timerEl = document.getElementById('timer');
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerEl.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert("Time's up! The exam will be submitted automatically.");
+                    submitExam();
+                }
+            }, 1000);
+        }
+
+        // --- QUESTION LOGIC ---
+        function loadQuestion(index) {
+            if (index < 0 || index >= currentExam.questions.length) {
+                return;
+            }
+            
+            currentQuestionIndex = index;
+            const question = currentExam.questions[index];
+            
+            // Update question status if 'not-visited'
+            if (questionStatus[index] === Q_STATUS.NOT_VISITED) {
+                questionStatus[index] = Q_STATUS.NOT_ANSWERED;
+            }
+
+            document.getElementById('question-number').textContent = index + 1;
+            document.getElementById('question-text').textContent = question.text;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option, i) => {
+                const optionId = `option-${i}`;
+                const isSelected = userAnswers[index] === option;
+                
+                const optionEl = document.createElement('label');
+                optionEl.htmlFor = optionId;
+                optionEl.className = `flex items-center p-4 border rounded-lg cursor-pointer transition-colors ${isSelected ? 'bg-blue-100 border-blue-500' : 'border-slate-300 hover:bg-slate-50'}`;
+                
+                optionEl.innerHTML = `
+                    <input type="radio" id="${optionId}" name="question-${index}" value="${option}" class="hidden" ${isSelected ? 'checked' : ''}>
+                    <span class="w-5 h-5 border-2 ${isSelected ? 'border-blue-600 bg-blue-600' : 'border-slate-400'} rounded-full flex items-center justify-center mr-4 transition-all">
+                        ${isSelected ? '<span class="w-2 h-2 bg-white rounded-full"></span>' : ''}
+                    </span>
+                    <span class="text-slate-700">${option}</span>
+                `;
+                
+                optionEl.addEventListener('click', () => selectOption(option));
+                optionsContainer.appendChild(optionEl);
+            });
+
+            // Update Nav Buttons
+            document.getElementById('prev-btn').disabled = index === 0;
+            document.getElementById('next-btn').disabled = index === currentExam.questions.length - 1;
+            
+            // Update Mark for Review button
+            updateMarkButton();
+            
+            // Update palette
+            renderPalette();
+        }
+
+        function selectOption(option) {
+            userAnswers[currentQuestionIndex] = option;
+            
+            // Update status
+            if (questionStatus[currentQuestionIndex] !== Q_STATUS.MARKED) {
+                questionStatus[currentQuestionIndex] = Q_STATUS.ANSWERED;
+            }
+            
+            // Re-load question to show visual selection
+            loadQuestion(currentQuestionIndex);
+        }
+
+        function navigateQuestion(direction) {
+            const newIndex = direction === 'next' ? currentQuestionIndex + 1 : currentQuestionIndex - 1;
+            loadQuestion(newIndex);
+        }
+        
+        function jumpToQuestion(index) {
+            loadQuestion(index);
+        }
+
+        function toggleMarkForReview() {
+            const currentStatus = questionStatus[currentQuestionIndex];
+            
+            if (currentStatus === Q_STATUS.MARKED) {
+                // Unmark it
+                questionStatus[currentQuestionIndex] = userAnswers[currentQuestionIndex] ? Q_STATUS.ANSWERED : Q_STATUS.NOT_ANSWERED;
+            } else {
+                // Mark it
+                questionStatus[currentQuestionIndex] = Q_STATUS.MARKED;
+            }
+            
+            updateMarkButton();
+            renderPalette();
+        }
+
+        function updateMarkButton() {
+            const markBtn = document.getElementById('mark-btn');
+            const markText = document.getElementById('mark-text');
+            const markIcon = document.getElementById('mark-icon');
+            
+            if (questionStatus[currentQuestionIndex] === Q_STATUS.MARKED) {
+                markText.textContent = 'Unmark';
+                markIcon.setAttribute('fill', 'currentColor');
+                markBtn.classList.add('text-blue-600', 'bg-blue-100');
+            } else {
+                markText.textContent = 'Mark for Review';
+                markIcon.setAttribute('fill', 'none');
+                markBtn.classList.remove('text-blue-600', 'bg-blue-100');
+            }
+        }
+
+        // --- PALETTE LOGIC ---
+        function renderPalette() {
+            const palette = document.getElementById('question-palette');
+            palette.innerHTML = '';
+
+            for (let i = 0; i < currentExam.questions.length; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i + 1;
+                btn.className = `w-12 h-12 rounded-lg font-medium transition-all duration-200 border-2 flex items-center justify-center`;
+                
+                let statusClass = '';
+                switch(questionStatus[i]) {
+                    case Q_STATUS.ANSWERED:
+                        statusClass = 'bg-green-500 border-green-600 text-white';
+                        break;
+                    case Q_STATUS.NOT_ANSWERED:
+                        statusClass = 'bg-red-500 border-red-600 text-white';
+                        break;
+                    case Q_STATUS.MARKED:
+                        statusClass = 'bg-blue-500 border-blue-600 text-white';
+                        break;
+                    case Q_STATUS.NOT_VISITED:
+                        statusClass = 'bg-white border-slate-400 text-slate-700 hover:bg-slate-100';
+                        break;
+                }
+                btn.classList.add(...statusClass.split(' '));
+                
+                if (i === currentQuestionIndex) {
+                    btn.classList.add('ring-4', 'ring-offset-2', 'ring-blue-500');
+                }
+
+                btn.onclick = () => jumpToQuestion(i);
+                palette.appendChild(btn);
+            }
+        }
+
+        // --- SUBMISSION LOGIC ---
+        function confirmSubmit() {
+            // Update summary
+            const answered = questionStatus.filter(s => s === Q_STATUS.ANSWERED).length;
+            const notAnswered = questionStatus.filter(s => s === Q_STATUS.NOT_ANSWERED || s === Q_STATUS.NOT_VISITED).length;
+            const marked = questionStatus.filter(s => s === Q_STATUS.MARKED).length;
+            
+            document.getElementById('summary-answered').textContent = answered;
+            document.getElementById('summary-not-answered').textContent = notAnswered;
+            document.getElementById('summary-marked').textContent = marked;
+
+            document.getElementById('modal-submit').classList.remove('hidden');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        function submitExam() {
+            clearInterval(timerInterval);
+            closeModal('modal-submit');
+            
+            // --- SCORING LOGIC ---
+            // This is where you would send `userAnswers` to your backend.
+            // For this prototype, we'll score it locally.
+            let score = 0;
+            for (let i = 0; i < currentExam.questions.length; i++) {
+                if (userAnswers[i] === currentExam.questions[i].answer) {
+                    score++;
+                }
+            }
+            
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('total-score').textContent = currentExam.questions.length;
+            
+            showPage('page-results');
+        }
+
+        // --- INIT ---
+        window.onload = () => {
+            showPage('page-login');
+        };
+    </script>
+</body>
+</html>

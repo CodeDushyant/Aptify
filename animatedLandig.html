@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AptitudePro - Aapka Quiz Platform (Dark Mode)</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- <style>
+        /* --- CSS Styling (Dark Mode) --- */
+
+        :root {
+            --primary-color: #79ACE9;
+            --secondary-color: #50E3C2;
+            --dark-bg: #1a1a2e;
+            --card-bg: #21213b;
+            --text-light: #e0e0e0;
+            --text-lighter: #f0f0f0;
+            --border-color: #3a3a5e;
+            --button-hover-bg: #3f3f6e;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+        /* 2. Navigation Bar */
+        .navbar {
+            background: var(--dark-bg);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .navbar .container { display: flex; justify-content: space-between; align-items: center; }
+        .navbar .logo { font-size: 1.8rem; font-weight: 700; color: var(--primary-color); text-decoration: none; }
+        .navbar .nav-links { display: flex; list-style: none; gap: 2rem; align-items: center; }
+        .navbar .nav-links a { text-decoration: none; color: var(--text-light); font-weight: 500; transition: color 0.3s ease; }
+        .navbar .nav-links a:hover { color: var(--primary-color); }
+
+        /* Buttons */
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-secondary { background: transparent; color: var(--primary-color); border: 1px solid var(--primary-color); }
+        .btn-secondary:hover { background: var(--primary-color); color: var(--dark-bg); }
+
+        .btn-primary { background: var(--primary-color); color: var(--dark-bg); border: 1px solid var(--primary-color); }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+
+        .navbar .auth-buttons { display: flex; gap: 0.8rem; }
+        .hamburger { display: none; font-size: 2rem; cursor: pointer; color: var(--text-light); }
+
+        /* 3. Hero Landing Section */
+        .hero {
+            background: linear-gradient(135deg, #1e3a8a, #4a0e4e);
+            color: var(--text-lighter);
+            min-height: 85vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 4rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .hero-content { max-width: 700px; }
+        .hero-content h1 { font-size: 3.5rem; font-weight: 700; line-height: 1.2; margin-bottom: 1rem; text-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+        .hero-content p { font-size: 1.2rem; margin-bottom: 2rem; font-weight: 400; opacity: 0.9; }
+
+        .btn-cta { /* Call to Action Button */
+            background: var(--secondary-color);
+            color: var(--dark-bg);
+            padding: 0.9rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(80, 227, 194, 0.4);
+            
+            /* ===== ANIMATION ADDED HERE ===== */
+            animation: pulseGlow 2.5s infinite ease-in-out;
+        }
+        
+        .btn-cta:hover {
+            /* Hover par animation rukega nahi, but scale effect tez hoga */
+            transform: scale(1.05) translateY(-3px); 
+            box-shadow: 0 8px 25px rgba(80, 227, 194, 0.6);
+            animation-play-state: paused; /* Optional: Hover karne par animation rok sakte hain */
+        }
+
+        /* ===== KEYFRAMES FOR ANIMATION ===== */
+        @keyframes pulseGlow {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 5px 20px rgba(80, 227, 194, 0.4);
+            }
+            50% {
+                transform: scale(1.03); /* Thoda sa bada hoga */
+                box-shadow: 0 8px 30px rgba(80, 227, 194, 0.6); /* Glow badhega */
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 5px 20px rgba(80, 227, 194, 0.4);
+            }
+        }
+
+
+        /* 4. Responsive Design */
+        @media(max-width: 768px) {
+            .navbar .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 65px;
+                left: 0;
+                width: 100%;
+                background: var(--dark-bg);
+                box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+                padding: 1rem 0;
+                border-top: 1px solid var(--border-color);
+            }
+            
+            .navbar .nav-links.active { display: flex; }
+            .navbar .nav-links li { width: 100%; text-align: center; padding: 0.5rem 0; }
+            .navbar .nav-links a { padding: 0.5rem 0; display: block; }
+            .navbar .auth-buttons { display: none; }
+
+            .navbar .auth-buttons.active {
+                display: flex;
+                flex-direction: column;
+                width: 90%;
+                margin: 0 auto;
+                gap: 1rem;
+                padding-top: 1rem;
+            }
+
+            .navbar .auth-buttons .btn { width: 100%; text-align: center; }
+            .hamburger { display: block; }
+            .hero-content h1 { font-size: 2.5rem; }
+            .hero-content p { font-size: 1rem; }
+        }
+
+    </style> -->
+
+<style>/* --- Dark Mode Variables --- */
+:root {
+    --primary-color: #79ACE9;
+    --secondary-color: #50E3C2;
+    --dark-bg: #1a1a2e;
+    --card-bg: #21213b;
+    --text-light: #e0e0e0;
+    --border-color: #3a3a5e;
+}
+
+/* Global Reset */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(120deg, #1a1a2e, #16213e, #1a1a2e);
+    background-size: 300% 300%;
+    color: var(--text-light);
+    line-height: 1.6;
+    animation: bgMove 15s ease infinite;
+}
+
+/* Background subtle motion */
+@keyframes bgMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Navbar */
+.navbar {
+    background: #1a1a2ed9;
+    backdrop-filter: blur(12px);
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid var(--border-color);
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: fadeDown 1s ease forwards;
+}
+
+/* Fade down animation */
+@keyframes fadeDown {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-decoration: none;
+    letter-spacing: 1px;
+    transition: color 0.3s;
+}
+.logo:hover {
+    color: var(--secondary-color);
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-light);
+    position: relative;
+}
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--primary-color);
+    transition: width 0.3s ease;
+}
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+/* Buttons */
+.btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+.btn-primary {
+    background: var(--primary-color);
+    color: var(--dark-bg);
+}
+.btn-primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px var(--primary-color);
+}
+.btn-secondary {
+    background: transparent;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+}
+.btn-secondary:hover {
+    background: var(--primary-color);
+    color: var(--dark-bg);
+}
+
+/* Hero Section */
+.hero {
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+}
+
+.hero-content {
+    max-width: 700px;
+    transform: translateY(50px);
+    opacity: 0;
+    animation: slideUp 1.2s ease 0.5s forwards;
+}
+
+/* Hero animation */
+@keyframes slideUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero-content h1 {
+    font-size: 3.5rem;
+    color: var(--primary-color);
+    text-shadow: 0 0 20px rgba(121,172,233,0.4);
+}
+.hero-content p {
+    font-size: 1.2rem;
+    margin: 1rem 0 2rem;
+}
+
+/* Glowing CTA */
+.btn-cta {
+    background: var(--secondary-color);
+    color: var(--dark-bg);
+    padding: 1rem 2.2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    box-shadow: 0 0 20px rgba(80, 227, 194, 0.5);
+    animation: pulse 2.5s infinite ease-in-out;
+}
+@keyframes pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(80, 227, 194, 0.4); }
+    50% { transform: scale(1.08); box-shadow: 0 0 30px rgba(80, 227, 194, 0.8); }
+}
+
+/* Responsive */
+@media(max-width: 768px) {
+    .hero-content h1 { font-size: 2.3rem; }
+    .hero-content p { font-size: 1rem; }
+}
+</style>
+</head>
+<body>
+
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <a href="#" class="logo">AptitudePro</a>
+                <div class="hamburger" id="hamburger-menu">&#9776;</div>
+                <ul class="nav-links" id="nav-links">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Our Services</a></li>
+                    <li classs="auth-placeholder"></li>
+                </ul>
+                <div class="auth-buttons" id="auth-buttons">
+                    <a href="#" class="btn btn-secondary">Login</a>
+                    <a href="#" class="btn btn-primary">Sign Up</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content container">
+                <h1>Apni Aptitude Skills Ko Master Karein</h1>
+                <p>
+                    India ke sabse interactive quiz platform ke saath apni agli exam ki taiyaari karein. 
+                    Personalized analysis aur unlimited practice tests.
+                </p>
+                <a href="#" class="btn btn-cta">Start Your Free Test Now</a>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    const hamburgerMenu = document.getElementById('hamburger-menu');
+    const navLinks = document.getElementById('nav-links');
+    
+    hamburgerMenu.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+    });
+
+    // Scroll fade animation for hero section
+    const hero = document.querySelector('.hero-content');
+    window.addEventListener('scroll', () => {
+        const scrollPos = window.scrollY;
+        hero.style.transform = `translateY(${scrollPos * 0.2}px)`;
+        hero.style.opacity = 1 - scrollPos / 500;
+    });
+});
+
+    </script>
+
+</body>
+</html>
