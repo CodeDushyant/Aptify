@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AptitudePro - Exam Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* 1. Basic Reset & Theme */
+        :root {
+            --primary-color: #79ACE9;
+            --secondary-color: #50E3C2;
+            --dark-bg: #1a1a2e;
+            --card-bg: #21213b;
+            --text-light: #e0e0e0;
+            --text-lighter: #f0f0f0;
+            --border-color: #3a3a5e;
+            --button-hover-bg: #3f3f6e;
+            --success-color: #50E3C2;
+            --warning-color: #E3B050;
+            --danger-color: #E35050;
+            --unseen-color: #3a3a5e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            line-height: 1.6;
+            /* Prevent text selection during exam */
+            user-select: none; 
+        }
+
+        /* 2. Screen Management */
+        .screen {
+            display: none;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 20px;
+        }
+
+        /* 3. Button Styles */
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+            border: 1px solid var(--primary-color);
+        }
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--secondary-color);
+            border: 1px solid var(--secondary-color);
+        }
+        .btn-secondary:hover {
+            background: var(--secondary-color);
+            color: var(--dark-bg);
+        }
+        
+        .btn-warning {
+            background: var(--warning-color);
+            color: var(--dark-bg);
+            border: 1px solid var(--warning-color);
+        }
+        .btn-warning:hover {
+            opacity: 0.9;
+        }
+        
+        .btn-danger {
+            background: var(--danger-color);
+            color: var(--text-lighter);
+            border: 1px solid var(--danger-color);
+        }
+        .btn-danger:hover {
+            opacity: 0.9;
+        }
+
+        /* ============================ */
+        /* === 4. INSTRUCTIONS SCREEN === */
+        /* ============================ */
+        
+        #instructions-screen .container {
+            max-width: 800px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            margin-top: 4rem;
+            padding: 2.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        #instructions-screen h1 {
+            color: var(--text-lighter);
+            font-size: 2.2rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        #instructions-screen h2 {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        #instructions-screen ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        #instructions-screen li {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+        }
+
+        #instructions-screen li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: var(--secondary-color);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        #instructions-screen .warning-box {
+            background: rgba(227, 80, 80, 0.1);
+            border: 1px solid var(--danger-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        #instructions-screen .warning-box h2 {
+            color: var(--danger-color);
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+        
+        #instructions-screen .warning-box li::before {
+            content: '!';
+            color: var(--danger-color);
+        }
+        
+        .start-exam-btn-container {
+            text-align: center;
+            margin-top: 2.5rem;
+        }
+
+        /* ===================== */
+        /* === 5. EXAM SCREEN === */
+        /* ===================== */
+
+        #exam-screen {
+            display: none; /* Hide until activated */
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .exam-header {
+            background: var(--card-bg);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            width: 100%;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .exam-header .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .timer-box {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .timer-box span {
+            color: var(--secondary-color);
+            background: var(--dark-bg);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            margin-left: 0.5rem;
+            min-width: 80px;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .exam-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        
+        @media(min-width: 1024px) {
+            .exam-layout {
+                grid-template-columns: 3fr 1fr;
+            }
+        }
+
+        /* --- Question Area --- */
+        .question-area {
+            padding: 2.5rem;
+            overflow-y: auto;
+        }
+
+        .question-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .question-header {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-lighter);
+            margin-bottom: 1.5rem;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .options-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .options-list li {
+            display: block;
+        }
+
+        .options-list input[type="radio"] {
+            display: none;
+        }
+
+        .options-list label {
+            display: block;
+            background: var(--dark-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .options-list label:hover {
+            border-color: var(--primary-color);
+        }
+
+        .options-list input[type="radio"]:checked + label {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+            border-color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .question-navigation {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* --- Question Palette (Sidebar) --- */
+        .question-palette {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-left: 1px solid var(--border-color);
+            overflow-y: auto;
+        }
+
+        .palette-header {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-lighter);
+            margin-bottom: 1.5rem;
+        }
+        
+        .palette-legend {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+        
+        .palette-legend li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .legend-color-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        #palette-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .palette-item {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+        .palette-item:hover {
+            transform: scale(1.05);
+            border-color: var(--primary-color);
+        }
+        
+        /* Status Colors */
+        .palette-unseen {
+            background: var(--unseen-color);
+            color: var(--text-lighter);
+        }
+        .palette-attended {
+            background: var(--success-color);
+            color: var(--dark-bg);
+        }
+        .palette-not-attended {
+            background: var(--danger-color);
+            color: var(--text-lighter);
+        }
+        .palette-marked {
+            background: var(--warning-color);
+            color: var(--dark-bg);
+        }
+
+        /* ========================= */
+        /* === 6. SUBMITTED SCREEN === */
+        /* ========================= */
+        
+        #submitted-screen .container {
+            max-width: 600px;
+            text-align: center;
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 4rem;
+            margin-top: 5rem;
+            border: 1px solid var(--border-color);
+        }
+        
+        #submitted-screen h1 {
+            color: var(--secondary-color);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        #submitted-screen p {
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        /* ======================== */
+        /* === 7. WARNING MODAL === */
+        /* ======================== */
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .modal-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2.5rem;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        
+        .modal-card h2 {
+            color: var(--danger-color);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .modal-card p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            color: var(--text-light);
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- ============================ -->
+    <!-- === SCREEN 1: INSTRUCTIONS === -->
+    <!-- ============================ -->
+    <section class="screen active" id="instructions-screen">
+        <div class="container">
+            <h1>Exam Instructions</h1>
+            <p>Kripya pariksha shuru karne se pehle sabhi nirdeshon ko dhyan se padhein.</p>
+            
+            <h2>General Instructions</h2>
+            <ul>
+                <li>Total exam duration <strong>30 minutes</strong> hai.</li>
+                <li>Is exam mein <strong>5 multiple-choice questions</strong> hain.</li>
+                <li>Har sahi uttar ke liye 1 mark milega.</li>
+                <li>Galat uttar ke liye koi negative marking nahi hai.</li>
+            </ul>
+
+            <div class="warning-box">
+                <h2>Anti-Cheating Rules</h2>
+                <ul>
+                    <li>Pariksha <strong>Full Screen Mode</strong> mein hi di ja sakti hai.</li>
+                    <li>Exam window se bahar jaane (tab switch karna) ya full screen se exit karne par warning di jayegi.</li>
+                    <li><strong>3 warnings</strong> ke baad aapka exam automatically submit kar diya jayega.</li>
+                </ul>
+            </div>
+            
+            <div class="start-exam-btn-container">
+                <button class="btn btn-primary" id="start-exam-btn">Allow Permissions & Start Exam</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================= -->
+    <!-- === SCREEN 2: EXAM === -->
+    <!-- ======================= -->
+    <section class="screen" id="exam-screen">
+        <header class="exam-header">
+            <a href="#" class="logo">AptitudePro</a>
+            <div class="timer-box">
+                Time Left: <span id="timer">30:00</span>
+            </div>
+        </header>
+        
+        <main class="exam-layout">
+            <div class="question-area">
+                <div class="question-container">
+                    <div class="question-header" id="question-header">
+                        Question 1 of 5
+                    </div>
+                    <p class="question-text" id="question-text">
+                        Loading question...
+                    </p>
+                    <ul class="options-list" id="options-list">
+                        <!-- Options will be dynamically inserted here -->
+                    </ul>
+                </div>
+                
+                <div class="question-navigation">
+                    <div>
+                        <button class="btn btn-secondary" id="prev-btn">Previous</button>
+                        <button class="btn btn-primary" id="next-btn">Next</button>
+                    </div>
+                    <div>
+                        <button class="btn btn-warning" id="mark-review-btn">Mark for Review</button>
+                        <button class="btn btn-danger" id="submit-exam-btn">Submit Exam</button>
+                    </div>
+                </div>
+            </div>
+            
+            <aside class="question-palette">
+                <h3 class="palette-header">Question Palette</h3>
+                
+                <ul class="palette-legend">
+                    <li><span class="legend-color-box" style="background: var(--success-color);"></span> &nbsp; Attended</li>
+                    <li><span class="legend-color-box" style="background: var(--danger-color);"></span> &nbsp; Not Attended</li>
+                    <li><span class="legend-color-box" style="background: var(--warning-color);"></span> &nbsp; Marked for Review</li>
+                    <li><span class="legend-color-box" style="background: var(--unseen-color);"></span> &nbsp; Unseen</li>
+                </ul>
+                
+                <div id="palette-grid">
+                    <!-- Palette items will be dynamically inserted here -->
+                </div>
+            </aside>
+        </main>
+    </section>
+
+    <!-- ========================== -->
+    <!-- === SCREEN 3: SUBMITTED === -->
+    <!-- ========================== -->
+    <section class="screen" id="submitted-screen">
+        <div class="container">
+            <h1>Exam Submitted!</h1>
+            <p>Aapka exam successfully submit ho gaya hai. Aap ab is window ko close kar sakte hain.</p>
+            <a href="dashboard.html" class="btn btn-primary">Back to Dashboard</a> 
+            <!-- Update this href to the correct dashboard file name -->
+        </div>
+    </section>
+    
+    <!-- ======================== -->
+    <!-- === WARNING MODAL === -->
+    <!-- ======================== -->
+    <div class="modal-overlay" id="warning-modal">
+        <div class="modal-card">
+            <h2 id="warning-title">Warning!</h2>
+            <p id="warning-message">Do not leave the exam window. This is your first warning.</p>
+            <button class="btn btn-primary" id="warning-ok-btn">I Understand</button>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // === 1. MOCK DATA ===
+            const mockQuestions = [
+                {
+                    id: 1,
+                    text: "What is 2 + 2?",
+                    options: ["3", "4", "5", "6"],
+                    answer: 1,
+                },
+                {
+                    id: 2,
+                    text: "What is the capital of France?",
+                    options: ["London", "Berlin", "Paris", "Madrid"],
+                    answer: 2,
+                },
+                {
+                    id: 3,
+                    text: "Which planet is known as the Red Planet?",
+                    options: ["Earth", "Mars", "Jupiter", "Venus"],
+                    answer: 1,
+                },
+                {
+                    id: 4,
+                    text: "Who wrote 'Hamlet'?",
+                    options: ["Charles Dickens", "Leo Tolstoy", "William Shakespeare", "Jane Austen"],
+                    answer: 2,
+                },
+                {
+                    id: 5,
+                    text: "What is the largest ocean on Earth?",
+                    options: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean", "Pacific Ocean"],
+                    answer: 3,
+                }
+            ];
+            
+            // Initialize questions state
+            let questions = mockQuestions.map(q => ({
+                ...q,
+                status: 'unseen', // 'unseen', 'attended', 'not-attended', 'marked'
+                userSelection: null, // index of selected option
+            }));
+
+            // === 2. STATE VARIABLES ===
+            let currentQuestionIndex = 0;
+            let timerSeconds = 30 * 60; // 30 Minutes
+            let timerInterval;
+            let cheatCount = 0;
+            const maxCheatAttempts = 3;
+            let examInProgress = false;
+
+            // === 3. DOM ELEMENT SELECTORS ===
+            const screens = {
+                instructions: document.getElementById('instructions-screen'),
+                exam: document.getElementById('exam-screen'),
+                submitted: document.getElementById('submitted-screen'),
+            };
+            
+            const examElements = {
+                timer: document.getElementById('timer'),
+                questionHeader: document.getElementById('question-header'),
+                questionText: document.getElementById('question-text'),
+                optionsList: document.getElementById('options-list'),
+                paletteGrid: document.getElementById('palette-grid'),
+            };
+
+            const buttons = {
+                start: document.getElementById('start-exam-btn'),
+                prev: document.getElementById('prev-btn'),
+                next: document.getElementById('next-btn'),
+                markReview: document.getElementById('mark-review-btn'),
+                submit: document.getElementById('submit-exam-btn'),
+            };
+            
+            const modal = {
+                overlay: document.getElementById('warning-modal'),
+                title: document.getElementById('warning-title'),
+                message: document.getElementById('warning-message'),
+                okBtn: document.getElementById('warning-ok-btn'),
+            };
+
+            // === 4. CORE FUNCTIONS ===
+            
+            /**
+             * Switches the visible screen
+             * @param {string} screenName - 'instructions', 'exam', or 'submitted'
+             */
+            function showScreen(screenName) {
+                Object.values(screens).forEach(screen => screen.classList.remove('active'));
+                if (screens[screenName]) {
+                    screens[screenName].classList.add('active');
+                    if(screenName === 'exam') {
+                        // Special flex display for exam screen
+                        screens[screenName].style.display = 'flex';
+                    }
+                }
+            }
+            
+            /**
+             * Renders the current question and its options
+             */
+            function renderQuestion() {
+                const q = questions[currentQuestionIndex];
+                
+                examElements.questionHeader.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+                examElements.questionText.textContent = q.text;
+                
+                examElements.optionsList.innerHTML = ''; // Clear old options
+                
+                q.options.forEach((option, index) => {
+                    const li = document.createElement('li');
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = 'option';
+                    input.id = `option-${index}`;
+                    input.value = index;
+                    if(q.userSelection === index) {
+                        input.checked = true;
+                    }
+                    
+                    const label = document.createElement('label');
+                    label.htmlFor = `option-${index}`;
+                    label.textContent = option;
+                    
+                    input.addEventListener('change', () => {
+                        questions[currentQuestionIndex].userSelection = index;
+                        questions[currentQuestionIndex].status = 'attended';
+                        updatePalette();
+                    });
+                    
+                    li.appendChild(input);
+                    li.appendChild(label);
+                    examElements.optionsList.appendChild(li);
+                });
+                
+                // Update button states
+                buttons.prev.disabled = currentQuestionIndex === 0;
+                buttons.next.disabled = currentQuestionIndex === questions.length - 1;
+            }
+            
+            /**
+             * Updates the question palette UI based on question status
+             */
+            function updatePalette() {
+                examElements.paletteGrid.innerHTML = '';
+                questions.forEach((q, index) => {
+                    const item = document.createElement('div');
+                    item.className = `palette-item palette-${q.status}`;
+                    item.textContent = index + 1;
+                    item.addEventListener('click', () => jumpToQuestion(index));
+                    examElements.paletteGrid.appendChild(item);
+                });
+            }
+            
+            /**
+             * Jumps to a specific question
+             * @param {number} index - The question index to jump to
+             */
+            function jumpToQuestion(index) {
+                // Before jumping, update status of current question if it's 'unseen'
+                if (questions[currentQuestionIndex].status === 'unseen' && questions[currentQuestionIndex].userSelection === null) {
+                    questions[currentQuestionIndex].status = 'not-attended';
+                }
+                
+                currentQuestionIndex = index;
+                renderQuestion();
+                updatePalette();
+            }
+
+            /**
+             * Starts the exam timer
+             */
+            function startTimer() {
+                timerInterval = setInterval(() => {
+                    timerSeconds--;
+                    const minutes = Math.floor(timerSeconds / 60);
+                    const seconds = timerSeconds % 60;
+                    examElements.timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    
+                    if (timerSeconds <= 0) {
+                        showCustomAlert("Time's Up!", "Your exam time has finished. The exam will be submitted automatically.", () => {
+                            submitExam();
+                        });
+                    }
+                }, 1000);
+            }
+
+            /**
+             * Submits the exam
+             */
+            function submitExam() {
+                examInProgress = false;
+                clearInterval(timerInterval);
+                document.exitFullscreen().catch(err => console.log(err)); // Exit fullscreen
+                
+                // Remove anti-cheating listeners
+                document.removeEventListener('visibilitychange', handleVisibilityChange);
+                document.removeEventListener('fullscreenchange', handleFullscreenChange);
+                document.removeEventListener('pointerlockchange', handlePointerLockChange); // NEW: Remove pointer lock listener
+
+                // NEW: Explicitly exit pointer lock
+                if (document.pointerLockElement) {
+                    document.exitPointerLock();
+                }
+
+                // Here you would normally send `questions` data to a server
+                console.log("Exam Submitted:", questions.map(q => ({ id: q.id, selection: q.userSelection })));
+                
+                showScreen('submitted');
+            }
+
+            /**
+             * Shows a custom warning modal
+             * @param {string} title - The title of the modal
+             * @param {string} message - The warning message
+             * @param {function} [callback] - Optional callback to run when OK is clicked
+             */
+            function showCustomAlert(title, message, callback) {
+                modal.title.textContent = title;
+                modal.message.textContent = message;
+                modal.overlay.classList.add('active');
+                
+                const okHandler = () => {
+                    modal.overlay.classList.remove('active');
+                    if(callback) callback();
+                    modal.okBtn.removeEventListener('click', okHandler); // Clean up listener
+                };
+                modal.okBtn.addEventListener('click', okHandler);
+            }
+
+            // === 5. ANTI-CHEATING LOGIC ===
+            
+            function handleVisibilityChange() {
+                if (document.hidden && examInProgress) {
+                    handleCheating("You have switched tabs or minimized the window.");
+                }
+            }
+
+            function handleFullscreenChange() {
+                if (!document.fullscreenElement && examInProgress) {
+                    handleCheating("You have exited full-screen mode.");
+                }
+            }
+
+            // NEW: Listener for Pointer Lock changes
+            function handlePointerLockChange() {
+                if (document.pointerLockElement !== document.documentElement && examInProgress) {
+                    // User has escaped pointer lock (e.g., by pressing 'Esc')
+                    handleCheating("Aapne exam lock ko disable kar diya hai (Pointer Lock).");
+                }
+            }
+
+            function handleCheating(reason) {
+                cheatCount++;
+                
+                if (cheatCount >= maxCheatAttempts) {
+                    showCustomAlert(
+                        "Exam Disqualified",
+                        `Warning ${cheatCount}/${maxCheatAttempts}: ${reason} Your exam will be submitted automatically.`,
+                        () => {
+                            submitExam();
+                        }
+                    );
+                } else {
+                    showCustomAlert(
+                        `Warning ${cheatCount} of ${maxCheatAttempts}`,
+                        `${reason} Please stay in the exam window. Further violations will lead to automatic submission.`,
+                        null
+                    );
+                }
+            }
+            
+            // === 6. EVENT LISTENERS ===
+            
+            // Start Exam
+            buttons.start.addEventListener('click', () => {
+                // 1. Request Fullscreen
+                document.documentElement.requestFullscreen().then(() => {
+                    // 2. NEW: After fullscreen, request pointer lock
+                    document.documentElement.requestPointerLock();
+                    
+                    // 3. Set flag
+                    examInProgress = true;
+                    
+                    // 4. Show exam screen
+                    showScreen('exam');
+                    
+                    // 5. Render first question & palette
+                    renderQuestion();
+                    updatePalette();
+                    
+                    // 6. Start timer
+                    startTimer();
+
+                    // 7. Attach anti-cheating listeners
+                    document.addEventListener('visibilitychange', handleVisibilityChange);
+                    document.addEventListener('fullscreenchange', handleFullscreenChange);
+                    document.addEventListener('pointerlockchange', handlePointerLockChange); // NEW: Add pointer lock listener
+
+                }).catch(err => {
+                    showCustomAlert("Error", `Could not enter full-screen mode. Please allow permissions. Error: ${err.message}`, null);
+                });
+            });
+            
+            // Next Question
+            buttons.next.addEventListener('click', () => {
+                if (currentQuestionIndex < questions.length - 1) {
+                    jumpToQuestion(currentQuestionIndex + 1);
+                }
+            });
+            
+            // Previous Question
+            buttons.prev.addEventListener('click', () => {
+                if (currentQuestionIndex > 0) {
+                    jumpToQuestion(currentQuestionIndex - 1);
+                }
+            });
+            
+            // Mark for Review
+            buttons.markReview.addEventListener('click', () => {
+                const q = questions[currentQuestionIndex];
+                if(q.status !== 'attended') {
+                    q.status = 'marked';
+                }
+                updatePalette();
+                if (currentQuestionIndex < questions.length - 1) {
+                    jumpToQuestion(currentQuestionIndex + 1);
+                }
+            });
+            
+            // Submit Exam
+            buttons.submit.addEventListener('click', () => {
+                showCustomAlert(
+                    "Confirm Submission",
+                    "Are you sure you want to submit the exam?",
+                    () => {
+                        submitExam();
+                    }
+                );
+            });
+            
+            // Disable context menu (right-click)
+            document.addEventListener('contextmenu', e => {
+                if(examInProgress) e.preventDefault();
+            });
+            
+            // Disable F1-F12 keys and other shortcuts
+            document.addEventListener('keydown', e => {
+                if (!examInProgress) return; // Only apply if exam is in progress
+
+                // Block F-keys, Ctrl+R, Ctrl+T
+                if(e.key.startsWith('F') || (e.ctrlKey && e.key === 'r') || (e.ctrlKey && e.key === 't')) {
+                    e.preventDefault();
+                }
+
+                // TRY to block Alt, Tab, and Windows/Meta key
+                // Note: We cannot fully block OS-level shortcuts.
+                // We can only prevent the browser's default action.
+                // The visibilitychange/pointerlockchange listeners are the real security.
+                if (e.key === 'Tab' || e.altKey || e.key === 'Meta') {
+                    e.preventDefault();
+                    // Trigger a warning, as this is a clear attempt to switch
+                    handleCheating("Aapne window switch karne ki koshish ki ('" + e.key + "').");
+                }
+            });
+
+        });
+    </script>
+
+</body>
+</html>
