@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AptitudePro - Super Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ============================================ */
+        /* === 1. NEW SUPER ADMIN THEME === */
+        /* ============================================ */
+        :root {
+            /* Updated Admin Colors */
+            --primary-color: #FACC15;  /* Amber/Gold */
+            --secondary-color: #10B981; /* Emerald Green */
+            --danger-color: #F43F5E;    /* Rose Red */
+            --dark-bg: #18181b;         /* Neutral Dark Gray */
+            --card-bg: #27272a;         /* Lighter Dark Gray */
+            --text-light: #e4e4e7;
+            --text-lighter: #f4f4f5;
+            --border-color: #3f3f46;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+
+        /* ============================================ */
+        /* === 2. NAVBAR (Admin Version) === */
+        /* ============================================ */
+        .navbar {
+            background: var(--dark-bg);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .navbar .nav-links a {
+            color: var(--text-light);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .navbar .nav-links a:hover,
+        .navbar .nav-links a.active {
+            color: var(--primary-color);
+        }
+        
+        .navbar .profile-link {
+            color: var(--text-light);
+            font-weight: 500;
+            transition: color 0.3s ease;
+            margin-right: 1.5rem;
+        }
+        .navbar .profile-link:hover {
+            color: var(--primary-color);
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        /* ============================================ */
+        /* === 3. BUTTONS (New Theme) === */
+        /* ============================================ */
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+        .btn-primary {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+            border: 1px solid var(--primary-color);
+        }
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+        .btn-secondary:hover {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+        }
+        
+        .btn-small {
+            padding: 0.3rem 0.8rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 5px;
+        }
+        .btn-view {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+        }
+         .btn-edit {
+            background: var(--secondary-color);
+            color: var(--dark-bg);
+        }
+        .btn-delete {
+            background: var(--danger-color);
+            color: var(--text-lighter);
+        }
+
+        /* ============================================ */
+        /* === 4. SUPER ADMIN DASHBOARD STYLES === */
+        /* ============================================ */
+        
+        main {
+            padding: 2rem 0;
+        }
+        
+        .dashboard-welcome {
+            margin-bottom: 2rem;
+        }
+        
+        .dashboard-welcome h1 {
+            color: var(--text-lighter);
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .dashboard-welcome p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+        }
+
+        /* Top-level Stats Grid */
+        .admin-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 5px solid var(--primary-color);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .stat-card.secondary {
+             border-left-color: var(--secondary-color);
+        }
+        
+        .stat-card h4 {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .stat-card p {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-lighter);
+        }
+        
+        /* Main Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            align-items: flex-start;
+        }
+        
+        .dash-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dash-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.75rem;
+        }
+
+        /* Form elements */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            background: var(--dark-bg);
+            border-radius: 5px;
+            color: var(--text-lighter);
+            font-size: 1rem;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.4);
+        }
+
+        .btn-full-width {
+            width: 100%;
+            font-size: 1rem;
+            padding: 0.8rem;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            background: var(--dark-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-light);
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+        .search-bar:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        /* Admin/Student List Styles */
+        .dash-card ul {
+            list-style: none;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        /* Custom Scrollbar */
+        .dash-card ul::-webkit-scrollbar {
+          width: 6px;
+        }
+        .dash-card ul::-webkit-scrollbar-thumb {
+          background: var(--border-color);
+          border-radius: 10px;
+        }
+        .dash-card ul::-webkit-scrollbar-track {
+          background: var(--dark-bg);
+          border-radius: 10px;
+        }
+
+        .dash-card li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .dash-card li:last-child {
+            border-bottom: none;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .user-info .name {
+            font-weight: 600;
+            color: var(--text-lighter);
+            font-size: 1rem;
+        }
+        .user-info .email {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+        
+        /* Placeholder for chart */
+        .chart-placeholder {
+            width: 100%;
+            height: 250px;
+            background: var(--dark-bg);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            border: 1px dashed var(--border-color);
+        }
+
+        /* ============================================ */
+        /* === 5. RESPONSIVE DESIGN === */
+        /* ============================================ */
+        @media(max-width: 992px) {
+             .admin-stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media(max-width: 768px) {
+            .navbar .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 65px;
+                left: 0;
+                width: 100%;
+                background: var(--dark-bg);
+                box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+                padding: 1rem 0;
+                border-top: 1px solid var(--border-color);
+            }
+
+            .navbar .nav-links.active {
+                display: flex;
+            }
+
+            .navbar .nav-links li {
+                width: 100%;
+                text-align: center;
+                padding: 0.5rem 0;
+            }
+            
+            .navbar .auth-links {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+                padding: 0 1rem;
+            }
+            .navbar .auth-links .btn {
+                text-align: center;
+            }
+            .navbar .profile-link {
+                margin: 0;
+                text-align: center;
+            }
+
+            .hamburger {
+                display: block;
+            }
+            
+            .admin-stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo">AptitudePro</a>
+            <div class="hamburger" id="hamburger-menu">&#9776;</div>
+            
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#" class="active">Dashboard</a></li>
+                <li><a href="#">User Management</a></li>
+                <li><a href="#">Exam Management</a></li>
+                <li><a href="#">Settings</a></li>
+            </ul>
+            
+            <div classs="auth-links">
+                 <a href="#" class="profile-link">Super Admin</a>
+                 <a href="#" class="btn btn-secondary" id="logout-button">Logout</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main class="container">
+    <section class="dashboard-welcome">
+        <h1>Super Admin Dashboard</h1>
+        <p>Yahan aap poore platform ko manage kar sakte hain.</p>
+    </section>
+    
+    <section class="admin-stats-grid">
+        <div class="stat-card">
+            <h4>Total Students</h4>
+            <p>1,450</p>
+        </div>
+        <div class="stat-card secondary">
+            <h4>Total Admins</h4>
+            <p>12</p>
+        </div>
+        <div class="stat-card">
+            <h4>Total Exams Available</h4>
+            <p>85</p>
+        </div>
+        <div class="stat-card secondary">
+            <h4>Total Exams Taken (24h)</h4>
+            <p>230</p>
+        </div>
+    </section>
+    
+    <section class="dashboard-grid">
+    
+        <div class="dash-card">
+            <h3>Student Management</h3>
+            <input type="text" class="search-bar" placeholder="Search students by name or email...">
+            <ul>
+                <li>
+                    <div class="user-info">
+                        <span class="name">Rohan Sharma</span>
+                        <span class="email">rohan.sharma@example.com</span>
+                    </div>
+                    <div class="action-buttons">
+                        <a href="#" class="btn btn-small btn-view">View</a>
+                    </div>
+                </li>
+                <li>
+                    <div class="user-info">
+                        <span class="name">Priya Singh</span>
+                        <span class="email">priya.s@example.com</span>
+                    </div>
+                    <div class="action-buttons">
+                        <a href="#" class="btn btn-small btn-view">View</a>
+                    </div>
+                </li>
+                <li>
+                    <div class="user-info">
+                        <span class="name">Amit Kumar</span>
+                        <span class="email">amit.kumar@example.com</span>
+                    </div>
+                    <div class="action-buttons">
+                        <a href="#" class="btn btn-small btn-view">View</a>
+                    </div>
+                </li>
+                 <li>
+                    <div class="user-info">
+                        <span class="name">Sneha Patil</span>
+                        <span class="email">s.patil@example.com</span>
+                    </div>
+                    <div class="action-buttons">
+                        <a href="#" class="btn btn-small btn-view">View</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="dash-card">
+            <h3>Naya Admin Banayein</h3>
+            <form id="create-admin-form">
+                <div class="form-group">
+                    <label for="admin-name">Naam</label>
+                    <input type="text" id="admin-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="admin-email">Email</label>
+                    <input type="email" id="admin-email" required>
+                </div>
+                 <div class="form-group">
+                    <label for="admin-role">Role</label>
+                    <select id="admin-role">
+                        <option value="design-admin">Design Admin</option>
+                        <option value="content-admin">Content Admin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="admin-password">Password</label>
+                    <input type="password" id="admin-password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full-width">Create Admin</button>
+            </form>
+        </div>
+
+        <div class="dash-card">
+            <h3>Admin Management</h3>
+            <input type="text" class="search-bar" placeholder="Search admins...">
+            <ul>
+                <li>
+                    <div class="user-info">
+                        <span class="name">Aarav Gupta (Design Admin)</span>
+                        <span class="email">aarav.g@aptitudepro.com</span>
+                    </div>
+                    <div class="action-buttons">
+                        <a href="#" class="btn btn-small btn-edit">Edit</a>
+                        <a href="#" class="btn btn-small btn-delete">Delete</a>
+                    </div>
+                </li>
+                 <li>
+                    <div class="user-info">
+                        <span class="name">Isha Mehra (Content Admin)</span>
+                        <span class="email">isha.m@aptitudepro.com</span>
+                    </div>
+                    <div class="action-buttons">
+                        <a href="#" class="btn btn-small btn-edit">Edit</a>
+                        <a href="#" class="btn btn-small btn-delete">Delete</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="dash-card">
+            <h3>Platform Activity</h3>
+            <div class="chart-placeholder">
+                <p>New User Signups (Chart)</p>
+            </div>
+        </div>
+    
+    </section>
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    
+    /* --- Responsive Menu Code --- */
+    const hamburgerMenu = document.getElementById('hamburger-menu');
+    const navLinks = document.getElementById('nav-links');
+
+    hamburgerMenu.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+    });
+
+});
+</script>
+
+</body>
+</html>
