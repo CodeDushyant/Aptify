@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AptitudePro - Create Exam</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* 1. Basic Reset & Setup */
+        :root {
+            --primary-color: #FFB300; /* Updated: Gold/Amber */
+            --secondary-color: #9C27B0; /* Updated: Purple */
+            --dark-bg: #212121; /* Updated: Dark Grey */
+            --card-bg: #303030; /* Updated: Lighter Grey */
+            --text-light: #e0e0e0;
+            --text-lighter: #f0f0f0;
+            --border-color: #424242; /* Updated: Medium Grey */
+            --button-hover-bg: #424242; /* Updated: Medium Grey */
+            --success-color: #4CAF50;
+            --warning-color: #FF9800;
+            --danger-color: #F44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 2. Navigation Bar */
+        .navbar {
+            background: var(--dark-bg);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .navbar .nav-links a {
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .navbar .nav-links a:hover {
+            color: var(--primary-color);
+        }
+        
+        /* 3. Buttons */
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        .navbar .auth-buttons {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+        }
+        
+        .navbar .profile-link {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .navbar .profile-link:hover {
+            color: var(--primary-color);
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        /* 4. Responsive Design */
+        @media(max-width: 768px) {
+            .navbar .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 65px;
+                left: 0;
+                width: 100%;
+                background: var(--dark-bg);
+                box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+                padding: 1rem 0;
+                border-top: 1px solid var(--border-color);
+            }
+
+            .navbar .nav-links.active {
+                display: flex;
+            }
+
+            .navbar .nav-links li {
+                width: 100%;
+                text-align: center;
+                padding: 0.5rem 0;
+            }
+
+            .navbar .nav-links a {
+                display: block;
+            }
+
+            .navbar .auth-buttons {
+                display: none;
+            }
+
+            .navbar .auth-buttons.active {
+                display: flex;
+                flex-direction: column;
+                width: 90%;
+                margin: 0 auto;
+                gap: 1rem;
+                padding-top: 1rem;
+            }
+
+            .navbar .auth-buttons .btn,
+            .navbar .auth-buttons .profile-link {
+                width: 100%;
+                text-align: center;
+                padding: 0.5rem 0;
+            }
+
+            .hamburger {
+                display: block;
+            }
+        }
+
+        /* ============================================ */
+        /* === 5. CREATE EXAM PAGE STYLES === */
+        /* ============================================ */
+        
+        main {
+            padding: 2rem 0;
+        }
+        
+        .page-header {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .page-header h1 {
+            color: var(--text-lighter);
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .back-btn {
+            background: var(--secondary-color);
+            color: var(--dark-bg);
+            padding: 0.7rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .create-exam-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            color: var(--text-lighter);
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .form-group input[type="datetime-local"] {
+            color-scheme: dark;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(255, 179, 0, 0.5);
+        }
+
+        /* New styles for radio buttons */
+        .radio-group {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .radio-group input[type="radio"] {
+            width: auto;
+            accent-color: var(--primary-color);
+        }
+        
+        /* New style to hide/show live settings */
+        #live-exam-settings.hidden {
+            display: none;
+        }
+        
+        .btn-submit-exam {
+            width: 100%;
+            padding: 0.8rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: var(--secondary-color);
+            color: var(--dark-bg);
+        }
+        
+        /* ============================================ */
+        /* === 6. QUESTION BANK STYLES === */
+        /* ============================================ */
+        .question-bank-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question-bank-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .search-box input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            color: var(--text-lighter);
+            font-size: 1rem;
+        }
+        
+        .filter-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-controls select {
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            color: var(--text-lighter);
+        }
+        
+        .questions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        .question-category {
+            margin-bottom: 2rem;
+        }
+        
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .category-header h3 {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+        }
+        
+        .difficulty-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .difficulty-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .difficulty-header h4 {
+            color: var(--text-lighter);
+            font-size: 1.1rem;
+        }
+        
+        .difficulty-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .badge-easy {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .badge-moderate {
+            background-color: var(--warning-color);
+            color: white;
+        }
+        
+        .badge-hard {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .question-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .question-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .question-item:last-child {
+            border-bottom: none;
+        }
+        
+        .question-item input[type="checkbox"] {
+            width: auto;
+            margin-top: 0.25rem;
+            flex-shrink: 0;
+        }
+        
+        .question-content {
+            flex: 1;
+        }
+        
+        .question-meta {
+            font-size: 0.85rem;
+            color: var(--primary-color);
+            margin-top: 0.5rem;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .recent-questions {
+            background: rgba(121, 172, 233, 0.1);
+            border: 1px solid var(--primary-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .recent-questions h4 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .selected-questions-summary {
+            background: rgba(80, 227, 194, 0.1);
+            border: 1px solid var(--secondary-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .selected-questions-summary h4 {
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .selected-count {
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+        
+        @media(max-width: 768px) {
+            .form-grid,
+            .questions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .question-bank-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+
+        /* ============================================ */
+        /* === 7. MODAL (POPUP) STYLES === */
+        /* ============================================ */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .modal-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 2.5rem;
+            width: 90%;
+            max-width: 600px;
+            color: var(--text-lighter);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            transform: scale(0.95);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 2.2rem;
+            color: var(--text-light);
+            cursor: pointer;
+        }
+
+        .modal-card h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--text-lighter);
+        }
+        
+        .btn-modal {
+            width: 100%;
+            padding: 0.8rem;
+            font-size: 1rem;
+            background: var(--secondary-color);
+            color: var(--dark-bg);
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <nav class="navbar">
+        <div class="container">
+            <a href="teacher-dashboard.html" class="logo">AptitudePro</a> <!-- Link back to dashboard -->
+            <div class="hamburger" id="hamburger-menu">&#9776;</div>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="teacher-dashboard.html">Dashboard</a></li> <!-- Link back to dashboard -->
+                <li><a href="#">Question Bank</a></li>
+                <li class="auth-placeholder"></li>
+            </ul>
+            
+            <div class="auth-buttons" id="auth-buttons">
+                <a href="#" class="profile-link">My Profile</a>
+                <a href="#" class="btn btn-secondary" id="logout-button">Logout</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <section class="container">
+        <div class="page-header">
+            <h1>Create New Exam</h1>
+            <a href="teacher-dashboard.html" class="back-btn">← Back to Dashboard</a>
+        </div>
+        
+        <div class="create-exam-card">
+            <form id="create-exam-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="exam-title">Exam Title</label>
+                        <input type="text" id="exam-title" placeholder="e.g., Quantitative Aptitude - Set 6" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="exam-duration">Duration (in minutes)</label>
+                        <input type="number" id="exam-duration" value="30" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="teacher-name">Created By</label>
+                        <input type="text" id="teacher-name" placeholder="Your name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="passing-percentage">Passing Percentage</label>
+                        <input type="number" id="passing-percentage" min="0" max="100" value="60" required>
+                    </div>
+                    
+                    <!-- New Exam Type Radio Buttons -->
+                    <div class="form-group full-width">
+                        <label>Exam Type</label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="exam-type" id="exam-type-live" value="live" checked>
+                                Live (Scheduled Time)
+                            </label>
+                            <label>
+                                <input type="radio" name="exam-type" id="exam-type-practice" value="practice">
+                                Practice (Always Available)
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Wrapper for Live Exam Settings -->
+                    <div class="form-grid full-width" id="live-exam-settings">
+                        <div class="form-group">
+                            <label for="exam-start-time">Start Time (Live Exam)</label>
+                            <input type="datetime-local" id="exam-start-time">
+                        </div>
+                        <div class="form-group">
+                            <label for="exam-end-time">End Time (Live Exam)</label>
+                            <input type="datetime-local" id="exam-end-time">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Question Bank Section -->
+        <div class="question-bank-container">
+            <div class="question-bank-header">
+                <h2>Question Bank</h2>
+                <button type="button" class="btn btn-primary" id="open-add-question-modal">Add New Question</button>
+            </div>
+            
+            <div class="search-box">
+                <input type="text" id="question-search" placeholder="Search questions by keyword...">
+                <button type="button" class="btn btn-secondary" id="search-btn">Search</button>
+            </div>
+            
+            <div class="filter-controls">
+                <select id="category-filter">
+                    <option value="">All Categories</option>
+                    <option value="quantitative">Quantitative Aptitude</option>
+                    <option value="logical">Logical Reasoning</option>
+                    <option value="verbal">Verbal Ability</option>
+                    <option value="general">General Knowledge</option>
+                </select>
+                
+                <select id="difficulty-filter">
+                    <option value="">All Difficulty Levels</option>
+                    <option value="easy">Easy</option>
+                    <option value="moderate">Moderate</option>
+                    <option value="hard">Hard</option>
+                </select>
+                
+                <select id="sort-filter">
+                    <option value="recent">Most Recent</option>
+                    <option value="difficulty">By Difficulty</option>
+                    <option value="category">By Category</option>
+                </select>
+            </div>
+            
+            <div class="questions-grid" id="questions-container">
+                <!-- Questions will be populated by JS -->
+            </div>
+            
+            <!-- Recent Questions Section -->
+            <div class="recent-questions" id="recent-questions-section">
+                <h4>Your Recently Added Questions</h4>
+                <div id="recent-questions-list">
+                    <!-- Recent questions will be populated by JS -->
+                </div>
+            </div>
+            
+            <!-- Selected Questions Summary -->
+            <div class="selected-questions-summary" id="selected-questions-summary">
+                <h4>Selected Questions: <span class="selected-count" id="selected-count">0</span></h4>
+                <p id="selected-categories">No questions selected yet</p>
+            </div>
+            
+            <div class="form-group full-width" style="margin-top: 2rem;">
+                <button type="submit" form="create-exam-form" class="btn btn-primary btn-submit-exam">Create and Schedule Exam</button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Add Question Modal -->
+<div class="modal-overlay" id="add-question-modal">
+    <div class="modal-card">
+        <span class="close-modal">&times;</span>
+        <h2>Add New Question</h2>
+        <form id="add-question-form">
+            <div class="form-group">
+                <label for="q-category">Subject / Category</label>
+                <select id="q-category" required>
+                    <option value="">-- Select Category --</option>
+                    <option value="quantitative">Quantitative Aptitude</option>
+                    <option value="logical">Logical Reasoning</option>
+                    <option value="verbal">Verbal Ability</option>
+                    <option value="general">General Knowledge</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="q-difficulty">Difficulty Level</label>
+                <select id="q-difficulty" required>
+                    <option value="">-- Select Difficulty --</option>
+                    <option value="easy">Easy</option>
+                    <option value="moderate">Moderate</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="q-text">Question Text</label>
+                <textarea id="q-text" placeholder="Sawaal yahan type karein..." required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="q-option1">Option 1</label>
+                <input type="text" id="q-option1" required>
+            </div>
+            <div class="form-group">
+                <label for="q-option2">Option 2</label>
+                <input type="text" id="q-option2" required>
+            </div>
+            <div class="form-group">
+                <label for="q-option3">Option 3</label>
+                <input type="text" id="q-option3" required>
+            </div>
+            <div class="form-group">
+                <label for="q-option4">Option 4</label>
+                <input type="text" id="q-option4" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="q-correct-option">Correct Option</label>
+                <select id="q-correct-option" required>
+                    <option value="">-- Select Correct Answer --</option>
+                    <option value="1">Option 1</option>
+                    <option value="2">Option 2</option>
+                    <option value="3">Option 3</option>
+                    <option value="4">Option 4</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="q-explanation">Explanation (Optional)</label>
+                <textarea id="q-explanation" placeholder="Sawaal ka solution ya explanation..."></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-modal">Add to Question Bank</button>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // Mock Database of Questions with more realistic data
+    const mockQuestionBank = [
+        { 
+            id: 'q1', 
+            text: 'What is 2 + 2?', 
+            category: 'quantitative', 
+            difficulty: 'easy',
+            createdBy: 'Teacher Amit',
+            createdAt: new Date('2023-05-10'),
+            options: ['3', '4', '5', '6'],
+            correctOption: 1,
+            explanation: 'Basic addition: 2 + 2 = 4'
+        },
+        { 
+            id: 'q2', 
+            text: 'What is the capital of France?', 
+            category: 'general', 
+            difficulty: 'easy',
+            createdBy: 'Teacher Priya',
+            createdAt: new Date('2023-06-15'),
+            options: ['London', 'Berlin', 'Paris', 'Madrid'],
+            correctOption: 2,
+            explanation: 'Paris is the capital city of France.'
+        },
+        { 
+            id: 'q3', 
+            text: 'Which planet is known as the Red Planet?', 
+            category: 'general', 
+            difficulty: 'easy',
+            createdBy: 'Teacher Amit',
+            createdAt: new Date('2023-04-22'),
+            options: ['Venus', 'Mars', 'Jupiter', 'Saturn'],
+            correctOption: 1,
+            explanation: 'Mars is called the Red Planet due to its reddish appearance.'
+        },
+        { 
+            id: 'q4', 
+            text: 'Who wrote \'Hamlet\'?', 
+            category: 'verbal', 
+            difficulty: 'moderate',
+            createdBy: 'Teacher Priya',
+            createdAt: new Date('2023-07-05'),
+            options: ['Charles Dickens', 'William Shakespeare', 'Jane Austen', 'Mark Twain'],
+            correctOption: 1,
+            explanation: 'Hamlet is a tragedy written by William Shakespeare.'
+        },
+        { 
+            id: 'q5', 
+            text: 'What is the largest ocean on Earth?', 
+            category: 'general', 
+            difficulty: 'easy',
+            createdBy: 'Teacher Ramesh',
+            createdAt: new Date('2023-03-18'),
+            options: ['Atlantic Ocean', 'Indian Ocean', 'Arctic Ocean', 'Pacific Ocean'],
+            correctOption: 3,
+            explanation: 'The Pacific Ocean is the largest and deepest ocean on Earth.'
+        },
+        { 
+            id: 'q6', 
+            text: 'Solve for x: 2x + 3 = 11', 
+            category: 'quantitative', 
+            difficulty: 'moderate',
+            createdBy: 'Teacher Amit',
+            createdAt: new Date('2023-08-12'),
+            options: ['x = 2', 'x = 3', 'x = 4', 'x = 5'],
+            correctOption: 2,
+            explanation: '2x + 3 = 11 → 2x = 8 → x = 4'
+        },
+        { 
+            id: 'q7', 
+            text: 'If all humans are mortal and Socrates is human, then Socrates is mortal. This is an example of:', 
+            category: 'logical', 
+            difficulty: 'moderate',
+            createdBy: 'Teacher Neha',
+            createdAt: new Date('2023-09-20'),
+            options: ['Deductive reasoning', 'Inductive reasoning', 'Abductive reasoning', 'Fallacious reasoning'],
+            correctOption: 0,
+            explanation: 'This is a classic example of deductive reasoning where a specific conclusion is drawn from general premises.'
+        },
+        { 
+            id: 'q8', 
+            text: 'A train travels 120 km in 2 hours. What is its speed in km/h?', 
+            category: 'quantitative', 
+            difficulty: 'easy',
+            createdBy: 'Teacher Ramesh',
+            createdAt: new Date('2023-10-05'),
+            options: ['40 km/h', '50 km/h', '60 km/h', '70 km/h'],
+            correctOption: 2,
+            explanation: 'Speed = Distance / Time = 120 km / 2 hours = 60 km/h'
+        },
+        { 
+            id: 'q9', 
+            text: 'Which word is the antonym of "benevolent"?', 
+            category: 'verbal', 
+            difficulty: 'hard',
+            createdBy: 'Teacher Priya',
+            createdAt: new Date('2023-11-15'),
+            options: ['Kind', 'Generous', 'Malevolent', 'Philanthropic'],
+            correctOption: 2,
+            explanation: 'Benevolent means well-meaning and kindly, while malevolent means having or showing a wish to do evil to others.'
+        },
+        { 
+            id: 'q10', 
+            text: 'If A is the brother of B, B is the sister of C, and C is the father of D, how is A related to D?', 
+            category: 'logical', 
+            difficulty: 'hard',
+            createdBy: 'Teacher Neha',
+            createdAt: new Date('2023-12-01'),
+            options: ['Uncle', 'Father', 'Brother', 'Grandfather'],
+            correctOption: 0,
+            explanation: 'A is the brother of B, B is the sister of C, so A is also the brother of C. Since C is the father of D, A is the uncle of D.'
+        }
+    ];
+
+    // Current teacher name (in a real app, this would come from authentication)
+    const currentTeacher = "Teacher Amit";
+    document.getElementById('teacher-name').value = currentTeacher;
+
+    // Track selected questions
+    let selectedQuestions = new Set();
+
+    /* --- Responsive Menu Code --- */
+    const hamburgerMenu = document.getElementById('hamburger-menu');
+    const navLinks = document.getElementById('nav-links');
+    const authButtons = document.getElementById('auth-buttons');
+    const authPlaceholder = navLinks.querySelector('.auth-placeholder');
+
+    function checkScreenSize() {
+        if (window.innerWidth <= 768) {
+            if (authPlaceholder && authButtons && !authPlaceholder.contains(authButtons)) {
+                authPlaceholder.appendChild(authButtons);
+                authButtons.classList.add('active');
+            }
+        } else {
+            const container = document.querySelector('.navbar .container');
+            if (authPlaceholder && authButtons && authPlaceholder.contains(authButtons)) {
+                container.appendChild(authButtons);
+                authButtons.classList.remove('active');
+            }
+            navLinks.classList.remove('active');
+        }
+    }
+
+    if(hamburgerMenu) {
+        hamburgerMenu.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    }
+
+    window.addEventListener('resize', checkScreenSize);
+    checkScreenSize();
+
+    /* --- Modal (Popup) Code --- */
+    const addQuestionModal = document.getElementById('add-question-modal');
+    const openAddQuestionBtn = document.getElementById('open-add-question-modal');
+    const closeButtons = document.querySelectorAll('.close-modal');
+
+    function openModal(modal) {
+        if (modal) modal.classList.add('active');
+    }
+
+    function closeModal(modal) {
+        if (modal) modal.classList.remove('active');
+    }
+    
+    // Open "Add Question" modal
+    if (openAddQuestionBtn) {
+        openAddQuestionBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal(addQuestionModal);
+        });
+    }
+
+    // Close Modals (generic)
+    closeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            closeModal(button.closest('.modal-overlay'));
+        });
+    });
+
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                closeModal(overlay);
+            }
+        });
+    });
+
+    /* --- Live Exam / Practice Exam Toggle Logic --- */
+    const liveRadio = document.getElementById('exam-type-live');
+    const practiceRadio = document.getElementById('exam-type-practice');
+    const liveSettings = document.getElementById('live-exam-settings');
+    const startTimeInput = document.getElementById('exam-start-time');
+    const endTimeInput = document.getElementById('exam-end-time');
+
+    function toggleExamType() {
+        if (practiceRadio.checked) {
+            liveSettings.classList.add('hidden');
+            startTimeInput.required = false;
+            endTimeInput.required = false;
+        } else { // liveRadio.checked
+            liveSettings.classList.remove('hidden');
+            startTimeInput.required = true;
+            endTimeInput.required = true;
+        }
+    }
+
+    liveRadio.addEventListener('change', toggleExamType);
+    practiceRadio.addEventListener('change', toggleExamType);
+    
+    // Initial check on page load
+    toggleExamType();
+
+    /* --- Question Bank Functionality --- */
+    const questionsContainer = document.getElementById('questions-container');
+    const recentQuestionsSection = document.getElementById('recent-questions-section');
+    const recentQuestionsList = document.getElementById('recent-questions-list');
+    const selectedCountEl = document.getElementById('selected-count');
+    const selectedCategoriesEl = document.getElementById('selected-categories');
+    const searchInput = document.getElementById('question-search');
+    const categoryFilter = document.getElementById('category-filter');
+    const difficultyFilter = document.getElementById('difficulty-filter');
+    const sortFilter = document.getElementById('sort-filter');
+    const searchBtn = document.getElementById('search-btn');
+
+    // Category display names
+    const categoryNames = {
+        'quantitative': 'Quantitative Aptitude',
+        'logical': 'Logical Reasoning',
+        'verbal': 'Verbal Ability',
+        'general': 'General Knowledge'
+    };
+
+    // Difficulty display names and colors
+    const difficultyNames = {
+        'easy': 'Easy',
+        'moderate': 'Moderate',
+        'hard': 'Hard'
+    };
+
+    // Function to render questions by category and difficulty
+    function renderQuestions(questions = mockQuestionBank) {
+        // Clear container
+        questionsContainer.innerHTML = '';
+        
+        // Group questions by category
+        const questionsByCategory = {};
+        questions.forEach(q => {
+            if (!questionsByCategory[q.category]) {
+                questionsByCategory[q.category] = [];
+            }
+            questionsByCategory[q.category].push(q);
+        });
+        
+        // Render each category
+        Object.keys(questionsByCategory).forEach(category => {
+            const categoryDiv = document.createElement('div');
+            categoryDiv.className = 'question-category';
+            
+            const categoryHeader = document.createElement('div');
+            categoryHeader.className = 'category-header';
+            
+            const categoryTitle = document.createElement('h3');
+            categoryTitle.textContent = categoryNames[category];
+            
+            const questionCount = document.createElement('span');
+            questionCount.textContent = `${questionsByCategory[category].length} questions`;
+            questionCount.style.color = 'var(--primary-color)';
+            questionCount.style.fontSize = '0.9rem';
+            
+            categoryHeader.appendChild(categoryTitle);
+            categoryHeader.appendChild(questionCount);
+            categoryDiv.appendChild(categoryHeader);
+            
+            // Group questions by difficulty within this category
+            const questionsByDifficulty = {
+                'easy': [],
+                'moderate': [],
+                'hard': []
+            };
+            
+            questionsByCategory[category].forEach(q => {
+                questionsByDifficulty[q.difficulty].push(q);
+            });
+            
+            // Render each difficulty level
+            Object.keys(questionsByDifficulty).forEach(difficulty => {
+                if (questionsByDifficulty[difficulty].length > 0) {
+                    const difficultyDiv = document.createElement('div');
+                    difficultyDiv.className = 'difficulty-section';
+                    
+                    const difficultyHeader = document.createElement('div');
+                    difficultyHeader.className = 'difficulty-header';
+                    
+                    const difficultyTitle = document.createElement('h4');
+                    difficultyTitle.textContent = difficultyNames[difficulty];
+                    
+                    const difficultyBadge = document.createElement('span');
+                    difficultyBadge.className = `difficulty-badge badge-${difficulty}`;
+                    difficultyBadge.textContent = questionsByDifficulty[difficulty].length;
+                    
+                    difficultyHeader.appendChild(difficultyTitle);
+                    difficultyHeader.appendChild(difficultyBadge);
+                    difficultyDiv.appendChild(difficultyHeader);
+                    
+                    const questionList = document.createElement('div');
+                    questionList.className = 'question-list';
+                    
+                    questionsByDifficulty[difficulty].forEach(q => {
+                        const questionItem = document.createElement('div');
+                        questionItem.className = 'question-item';
+                        
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.id = `chk-${q.id}`;
+                        checkbox.value = q.id;
+                        checkbox.checked = selectedQuestions.has(q.id);
+                        
+                        checkbox.addEventListener('change', (e) => {
+                            if (e.target.checked) {
+                                selectedQuestions.add(q.id);
+                            } else {
+                                selectedQuestions.delete(q.id);
+                            }
+                            updateSelectedQuestionsSummary();
+                        });
+                        
+                        const questionContent = document.createElement('div');
+                        questionContent.className = 'question-content';
+                        
+                        const questionText = document.createElement('div');
+                        questionText.textContent = q.text;
+                        
+                        const questionMeta = document.createElement('div');
+                        questionMeta.className = 'question-meta';
+                        
+                        const createdBy = document.createElement('span');
+                        createdBy.textContent = `By: ${q.createdBy}`;
+                        
+                        const createdAt = document.createElement('span');
+                        createdAt.textContent = `Added: ${q.createdAt.toLocaleDateString()}`;
+                        
+                        questionMeta.appendChild(createdBy);
+                        questionMeta.appendChild(createdAt);
+                        
+                        questionContent.appendChild(questionText);
+                        questionContent.appendChild(questionMeta);
+                        
+                        questionItem.appendChild(checkbox);
+                        questionItem.appendChild(questionContent);
+                        
+                        questionList.appendChild(questionItem);
+                    });
+                    
+                    difficultyDiv.appendChild(questionList);
+                    categoryDiv.appendChild(difficultyDiv);
+                }
+            });
+            
+            questionsContainer.appendChild(categoryDiv);
+        });
+        
+        // Update recent questions
+        renderRecentQuestions();
+    }
+
+    // Function to render recent questions by the current teacher
+    function renderRecentQuestions() {
+        const recentQuestions = mockQuestionBank
+            .filter(q => q.createdBy === currentTeacher)
+            .sort((a, b) => b.createdAt - a.createdAt)
+            .slice(0, 5); // Show only the 5 most recent
+        
+        recentQuestionsList.innerHTML = '';
+        
+        if (recentQuestions.length === 0) {
+            recentQuestionsSection.style.display = 'none';
+            return;
+        }
+        
+        recentQuestionsSection.style.display = 'block';
+        
+        recentQuestions.forEach(q => {
+            const questionItem = document.createElement('div');
+            questionItem.className = 'question-item';
+            
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = `chk-recent-${q.id}`;
+            checkbox.value = q.id;
+            checkbox.checked = selectedQuestions.has(q.id);
+            
+            checkbox.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    selectedQuestions.add(q.id);
+                } else {
+                    selectedQuestions.delete(q.id);
+                }
+                updateSelectedQuestionsSummary();
+                // Also update the main checkbox if it exists
+                const mainCheckbox = document.getElementById(`chk-${q.id}`);
+                if (mainCheckbox) {
+                    mainCheckbox.checked = e.target.checked;
+                }
+            });
+            
+            const questionContent = document.createElement('div');
+            questionContent.className = 'question-content';
+            
+            const questionText = document.createElement('div');
+            questionText.textContent = q.text;
+            
+            const questionMeta = document.createElement('div');
+            questionMeta.className = 'question-meta';
+            
+            const difficultyBadge = document.createElement('span');
+            difficultyBadge.className = `difficulty-badge badge-${q.difficulty}`;
+            difficultyBadge.textContent = difficultyNames[q.difficulty];
+            
+            const categoryText = document.createElement('span');
+            categoryText.textContent = categoryNames[q.category];
+            
+            questionMeta.appendChild(difficultyBadge);
+            questionMeta.appendChild(categoryText);
+            
+            questionContent.appendChild(questionText);
+            questionContent.appendChild(questionMeta);
+            
+            questionItem.appendChild(checkbox);
+            questionItem.appendChild(questionContent);
+            
+            recentQuestionsList.appendChild(questionItem);
+        });
+    }
+
+    // Function to update selected questions summary
+    function updateSelectedQuestionsSummary() {
+        selectedCountEl.textContent = selectedQuestions.size;
+        
+        // Count questions by category
+        const categoryCounts = {};
+        selectedQuestions.forEach(qId => {
+            const question = mockQuestionBank.find(q => q.id === qId);
+            if (question) {
+                if (!categoryCounts[question.category]) {
+                    categoryCounts[question.category] = 0;
+                }
+                categoryCounts[question.category]++;
+            }
+        });
+        
+        // Create summary text
+        let summaryText = '';
+        Object.keys(categoryCounts).forEach(category => {
+            summaryText += `${categoryNames[category]}: ${categoryCounts[category]}, `;
+        });
+        
+        // Remove trailing comma and space
+        if (summaryText) {
+            summaryText = summaryText.slice(0, -2);
+        } else {
+            summaryText = 'No questions selected yet';
+        }
+        
+        selectedCategoriesEl.textContent = summaryText;
+    }
+
+    // Function to filter and search questions
+    function filterQuestions() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const category = categoryFilter.value;
+        const difficulty = difficultyFilter.value;
+        const sortBy = sortFilter.value;
+        
+        let filteredQuestions = mockQuestionBank;
+        
+        // Apply search filter
+        if (searchTerm) {
+            filteredQuestions = filteredQuestions.filter(q => 
+                q.text.toLowerCase().includes(searchTerm) ||
+                q.createdBy.toLowerCase().includes(searchTerm)
+            );
+        }
+        
+        // Apply category filter
+        if (category) {
+            filteredQuestions = filteredQuestions.filter(q => q.category === category);
+        }
+        
+        // Apply difficulty filter
+        if (difficulty) {
+            filteredQuestions = filteredQuestions.filter(q => q.difficulty === difficulty);
+        }
+        
+        // Apply sorting
+        if (sortBy === 'recent') {
+            filteredQuestions.sort((a, b) => b.createdAt - a.createdAt);
+        } else if (sortBy === 'difficulty') {
+            const difficultyOrder = { 'easy': 0, 'moderate': 1, 'hard': 2 };
+            filteredQuestions.sort((a, b) => difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty]);
+        } else if (sortBy === 'category') {
+            filteredQuestions.sort((a, b) => a.category.localeCompare(b.category));
+        }
+        
+        renderQuestions(filteredQuestions);
+    }
+
+    // Event listeners for filters and search
+    searchBtn.addEventListener('click', filterQuestions);
+    searchInput.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') {
+            filterQuestions();
+        }
+    });
+    categoryFilter.addEventListener('change', filterQuestions);
+    difficultyFilter.addEventListener('change', filterQuestions);
+    sortFilter.addEventListener('change', filterQuestions);
+
+    // Form Submissions
+    document.getElementById('create-exam-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const title = document.getElementById('exam-title').value;
+        const duration = document.getElementById('exam-duration').value;
+        const teacherName = document.getElementById('teacher-name').value;
+        const passingPercentage = document.getElementById('passing-percentage').value;
+        const examType = document.querySelector('input[name="exam-type"]:checked').value;
+        
+        if (selectedQuestions.size === 0) {
+            alert("Please select at least one question for the exam!");
+            return;
+        }
+
+        console.log('Creating Exam with...');
+        console.log('Title:', title);
+        console.log('Duration:', duration);
+        console.log('Teacher:', teacherName);
+        console.log('Passing Percentage:', passingPercentage);
+        console.log('Exam Type:', examType);
+        console.log('Selected Questions:', Array.from(selectedQuestions));
+        
+        if (examType === 'live') {
+            const startTime = document.getElementById('exam-start-time').value;
+            const endTime = document.getElementById('exam-end-time').value;
+            console.log('Start Time:', startTime);
+            console.log('End Time:', endTime);
+        }
+
+        // Success message
+        alert(`Exam "${title}" successfully created with ${selectedQuestions.size} questions!`);
+        // In a real app, you would redirect to the dashboard or exam list
+        // window.location.href = 'teacher-dashboard.html';
+    });
+    
+    document.getElementById('add-question-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const newQ = {
+            id: `q${mockQuestionBank.length + 1}`,
+            text: document.getElementById('q-text').value,
+            category: document.getElementById('q-category').value,
+            difficulty: document.getElementById('q-difficulty').value,
+            createdBy: currentTeacher,
+            createdAt: new Date(),
+            options: [
+                document.getElementById('q-option1').value,
+                document.getElementById('q-option2').value,
+                document.getElementById('q-option3').value,
+                document.getElementById('q-option4').value
+            ],
+            correctOption: parseInt(document.getElementById('q-correct-option').value),
+            explanation: document.getElementById('q-explanation').value
+        };
+        
+        mockQuestionBank.push(newQ); // Add to mock DB
+        console.log('New question added:', newQ);
+        
+        // Form reset
+        document.getElementById('add-question-form').reset();
+        
+        closeModal(addQuestionModal);
+        
+        // Refresh the question lists
+        filterQuestions();
+        updateSelectedQuestionsSummary();
+        
+        // Auto-select the newly added question
+        selectedQuestions.add(newQ.id);
+        updateSelectedQuestionsSummary();
+    });
+
+    // Initial render
+    renderQuestions();
+    updateSelectedQuestionsSummary();
+
+});
+</script>
+
+</body>
+</html>
