@@ -397,26 +397,86 @@
         /* ========================= */
         
         #submitted-screen .container {
-            max-width: 600px;
+            max-width: 800px;
             text-align: center;
             background: var(--card-bg);
             border-radius: 12px;
-            padding: 4rem;
-            margin-top: 5rem;
+            padding: 3rem;
+            margin-top: 4rem;
             border: 1px solid var(--border-color);
         }
         
         #submitted-screen h1 {
             color: var(--secondary-color);
             font-size: 2.5rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
         
         #submitted-screen p {
             font-size: 1.1rem;
-            margin-bottom: 2.5rem;
+            margin-bottom: 2rem;
         }
         
+        .score-card {
+            background: rgba(80, 227, 194, 0.1);
+            border: 2px solid var(--secondary-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .score-title {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .score-value {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--text-lighter);
+            margin-bottom: 1rem;
+        }
+        
+        .score-details {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+        
+        .score-stat {
+            margin: 0.5rem 1rem;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        
+        .performance-message {
+            font-size: 1.2rem;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            background: rgba(80, 227, 194, 0.1);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
         /* ======================== */
         /* === 7. WARNING MODAL === */
         /* ======================== */
@@ -560,10 +620,38 @@
     <!-- ========================== -->
     <section class="screen" id="submitted-screen">
         <div class="container">
-            <h1>Exam Submitted!</h1>
-            <p>Aapka exam successfully submit ho gaya hai. Aap ab is window ko close kar sakte hain.</p>
-            <a href="dashboard.html" class="btn btn-primary">Back to Dashboard</a> 
-            <!-- Update this href to the correct dashboard file name -->
+            <h1 id="submission-title">Exam Submitted!</h1>
+            <p id="submission-message">Aapka exam successfully submit ho gaya hai.</p>
+            
+            <!-- Score Card - Only shown for practice exams -->
+            <div id="score-card" class="score-card" style="display: none;">
+                <h2 class="score-title">Your Score</h2>
+                <div class="score-value" id="score-value">0/5</div>
+                
+                <div class="score-details">
+                    <div class="score-stat">
+                        <div class="stat-value" id="correct-answers">0</div>
+                        <div class="stat-label">Correct</div>
+                    </div>
+                    <div class="score-stat">
+                        <div class="stat-value" id="incorrect-answers">0</div>
+                        <div class="stat-label">Incorrect</div>
+                    </div>
+                    <div class="score-stat">
+                        <div class="stat-value" id="unattempted">0</div>
+                        <div class="stat-label">Unattempted</div>
+                    </div>
+                </div>
+                
+                <div class="performance-message" id="performance-message">
+                    Great job! You performed well.
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="dashboard.html" class="btn btn-primary">Back to Dashboard</a>
+                <button class="btn btn-secondary" id="review-answers-btn" style="display: none;">Review Answers</button>
+            </div>
         </div>
     </section>
     
@@ -630,6 +718,9 @@
             let cheatCount = 0;
             const maxCheatAttempts = 3;
             let examInProgress = false;
+            
+            // NEW: Track exam type (live or practice)
+            let examType = 'practice'; // Change to 'live' for live exam behavior
 
             // === 3. DOM ELEMENT SELECTORS ===
             const screens = {
@@ -659,6 +750,19 @@
                 title: document.getElementById('warning-title'),
                 message: document.getElementById('warning-message'),
                 okBtn: document.getElementById('warning-ok-btn'),
+            };
+            
+            // NEW: Elements for submitted screen
+            const submittedElements = {
+                title: document.getElementById('submission-title'),
+                message: document.getElementById('submission-message'),
+                scoreCard: document.getElementById('score-card'),
+                scoreValue: document.getElementById('score-value'),
+                correctAnswers: document.getElementById('correct-answers'),
+                incorrectAnswers: document.getElementById('incorrect-answers'),
+                unattempted: document.getElementById('unattempted'),
+                performanceMessage: document.getElementById('performance-message'),
+                reviewAnswersBtn: document.getElementById('review-answers-btn')
             };
 
             // === 4. CORE FUNCTIONS ===
@@ -768,6 +872,59 @@
             }
 
             /**
+             * Calculates and returns exam score details
+             */
+            function calculateScore() {
+                let correct = 0;
+                let incorrect = 0;
+                let unattempted = 0;
+                
+                questions.forEach(q => {
+                    if (q.userSelection === null) {
+                        unattempted++;
+                    } else if (q.userSelection === q.answer) {
+                        correct++;
+                    } else {
+                        incorrect++;
+                    }
+                });
+                
+                return {
+                    correct,
+                    incorrect,
+                    unattempted,
+                    total: questions.length,
+                    percentage: Math.round((correct / questions.length) * 100)
+                };
+            }
+
+            /**
+             * Displays the score and performance details
+             */
+            function displayScore(score) {
+                submittedElements.scoreValue.textContent = `${score.correct}/${score.total}`;
+                submittedElements.correctAnswers.textContent = score.correct;
+                submittedElements.incorrectAnswers.textContent = score.incorrect;
+                submittedElements.unattempted.textContent = score.unattempted;
+                
+                // Set performance message based on score
+                if (score.percentage >= 80) {
+                    submittedElements.performanceMessage.textContent = "Excellent! You have a strong understanding of the material.";
+                    submittedElements.performanceMessage.style.background = "rgba(80, 227, 194, 0.2)";
+                } else if (score.percentage >= 60) {
+                    submittedElements.performanceMessage.textContent = "Good job! You passed the exam.";
+                    submittedElements.performanceMessage.style.background = "rgba(227, 179, 80, 0.2)";
+                } else {
+                    submittedElements.performanceMessage.textContent = "Keep practicing! You'll do better next time.";
+                    submittedElements.performanceMessage.style.background = "rgba(227, 80, 80, 0.2)";
+                }
+                
+                // Show the score card
+                submittedElements.scoreCard.style.display = 'block';
+                submittedElements.reviewAnswersBtn.style.display = 'inline-block';
+            }
+
+            /**
              * Submits the exam
              */
             function submitExam() {
@@ -778,15 +935,34 @@
                 // Remove anti-cheating listeners
                 document.removeEventListener('visibilitychange', handleVisibilityChange);
                 document.removeEventListener('fullscreenchange', handleFullscreenChange);
-                document.removeEventListener('pointerlockchange', handlePointerLockChange); // NEW: Remove pointer lock listener
+                document.removeEventListener('pointerlockchange', handlePointerLockChange);
 
-                // NEW: Explicitly exit pointer lock
+                // Exit pointer lock if active
                 if (document.pointerLockElement) {
                     document.exitPointerLock();
                 }
 
-                // Here you would normally send `questions` data to a server
-                console.log("Exam Submitted:", questions.map(q => ({ id: q.id, selection: q.userSelection })));
+                // Calculate score
+                const score = calculateScore();
+                
+                // Update submission screen based on exam type
+                if (examType === 'live') {
+                    submittedElements.title.textContent = "Exam Submitted Successfully!";
+                    submittedElements.message.textContent = "Your responses have been recorded. Results will be available after the exam period ends.";
+                    submittedElements.scoreCard.style.display = 'none';
+                    submittedElements.reviewAnswersBtn.style.display = 'none';
+                } else {
+                    submittedElements.title.textContent = "Exam Completed!";
+                    submittedElements.message.textContent = "Your exam has been submitted successfully. Here's how you performed:";
+                    displayScore(score);
+                }
+                
+                // Log exam data (in real app, send to server)
+                console.log("Exam Submitted:", {
+                    questions: questions.map(q => ({ id: q.id, selection: q.userSelection })),
+                    score: score,
+                    examType: examType
+                });
                 
                 showScreen('submitted');
             }
@@ -824,7 +1000,7 @@
                 }
             }
 
-            // NEW: Listener for Pointer Lock changes
+            // Listener for Pointer Lock changes
             function handlePointerLockChange() {
                 if (document.pointerLockElement !== document.documentElement && examInProgress) {
                     // User has escaped pointer lock (e.g., by pressing 'Esc')
@@ -856,28 +1032,25 @@
             
             // Start Exam
             buttons.start.addEventListener('click', () => {
-                // 1. Request Fullscreen
+                // Request Fullscreen
                 document.documentElement.requestFullscreen().then(() => {
-                    // 2. NEW: After fullscreen, request pointer lock
-                    document.documentElement.requestPointerLock();
-                    
-                    // 3. Set flag
+                    // Set flag
                     examInProgress = true;
                     
-                    // 4. Show exam screen
+                    // Show exam screen
                     showScreen('exam');
                     
-                    // 5. Render first question & palette
+                    // Render first question & palette
                     renderQuestion();
                     updatePalette();
                     
-                    // 6. Start timer
+                    // Start timer
                     startTimer();
 
-                    // 7. Attach anti-cheating listeners
+                    // Attach anti-cheating listeners
                     document.addEventListener('visibilitychange', handleVisibilityChange);
                     document.addEventListener('fullscreenchange', handleFullscreenChange);
-                    document.addEventListener('pointerlockchange', handlePointerLockChange); // NEW: Add pointer lock listener
+                    document.addEventListener('pointerlockchange', handlePointerLockChange);
 
                 }).catch(err => {
                     showCustomAlert("Error", `Could not enter full-screen mode. Please allow permissions. Error: ${err.message}`, null);
@@ -921,6 +1094,12 @@
                 );
             });
             
+            // Review Answers Button
+            submittedElements.reviewAnswersBtn.addEventListener('click', () => {
+                // In a real app, this would navigate to a review page
+                alert("In a complete implementation, this would show a detailed review of your answers.");
+            });
+            
             // Disable context menu (right-click)
             document.addEventListener('contextmenu', e => {
                 if(examInProgress) e.preventDefault();
@@ -936,9 +1115,6 @@
                 }
 
                 // TRY to block Alt, Tab, and Windows/Meta key
-                // Note: We cannot fully block OS-level shortcuts.
-                // We can only prevent the browser's default action.
-                // The visibilitychange/pointerlockchange listeners are the real security.
                 if (e.key === 'Tab' || e.altKey || e.key === 'Meta') {
                     e.preventDefault();
                     // Trigger a warning, as this is a clear attempt to switch

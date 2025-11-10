@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AptitudePro - Teacher Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* 1. Basic Reset & Setup */
+        :root {
+            --primary-color: #FFB300; /* Updated: Gold/Amber */
+            --secondary-color: #9C27B0; /* Updated: Purple */
+            --dark-bg: #212121; /* Updated: Dark Grey */
+            --card-bg: #303030; /* Updated: Lighter Grey */
+            --text-light: #e0e0e0;
+            --text-lighter: #f0f0f0;
+            --border-color: #424242; /* Updated: Medium Grey */
+            --button-hover-bg: #424242; /* Updated: Medium Grey */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 2. Navigation Bar */
+        .navbar {
+            background: var(--dark-bg);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .navbar .nav-links a {
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .navbar .nav-links a:hover {
+            color: var(--primary-color);
+        }
+        
+        /* 3. Buttons */
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        .btn-cta {
+            background: var(--secondary-color);
+            color: var(--dark-bg);
+            padding: 0.9rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(80, 227, 194, 0.4);
+        }
+
+        .btn-cta:hover {
+            transform: scale(1.05) translateY(-3px);
+            box-shadow: 0 8px 25px rgba(80, 227, 194, 0.6);
+        }
+
+        .navbar .auth-buttons {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+        }
+        
+        /* Profile Link (Navbar) */
+        .navbar .profile-link {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .navbar .profile-link:hover {
+            color: var(--primary-color);
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        /* 4. Responsive Design */
+        @media(max-width: 768px) {
+            .navbar .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 65px;
+                left: 0;
+                width: 100%;
+                background: var(--dark-bg);
+                box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+                padding: 1rem 0;
+                border-top: 1px solid var(--border-color);
+            }
+
+            .navbar .nav-links.active {
+                display: flex;
+            }
+
+            .navbar .nav-links li {
+                width: 100%;
+                text-align: center;
+                padding: 0.5rem 0;
+            }
+
+            .navbar .nav-links a {
+                display: block;
+            }
+
+            .navbar .auth-buttons {
+                display: none;
+            }
+
+            .navbar .auth-buttons.active {
+                display: flex;
+                flex-direction: column;
+                width: 90%;
+                margin: 0 auto;
+                gap: 1rem;
+                padding-top: 1rem;
+            }
+
+            .navbar .auth-buttons .btn,
+            .navbar .auth-buttons .profile-link {
+                width: 100%;
+                text-align: center;
+                padding: 0.5rem 0;
+            }
+
+            .hamburger {
+                display: block;
+            }
+        }
+
+        /* ============================================ */
+        /* === 5. DASHBOARD PAGE STYLES === */
+        /* ============================================ */
+        
+        main {
+            padding: 2rem 0;
+        }
+        
+        .dashboard-welcome {
+            margin-bottom: 2rem;
+        }
+        
+        .dashboard-welcome h1 {
+            color: var(--text-lighter);
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .dashboard-welcome p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .dash-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .dash-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        /* Stats Grid (Progress & Exam Count) */
+        .stat-summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .stat-card {
+            background: var(--dark-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .stat-card h4 {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-card p {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-lighter);
+        }
+        
+        /* CTA Card (Attend Exam) */
+        .cta-card {
+            background: linear-gradient(135deg, #1e3a8a, #4a0e4e);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--text-lighter);
+        }
+        
+        .cta-card h3 {
+            color: var(--text-lighter);
+            border: none;
+        }
+        
+        .cta-card p {
+            margin-bottom: 1.5rem;
+        }
+        
+        /* List Styles (Leaderboard, Results, Exams) */
+        .dash-card ul, .dash-card ol {
+            list-style: none;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        /* Custom Scrollbar */
+        .dash-card ul::-webkit-scrollbar, 
+        .dash-card ol::-webkit-scrollbar {
+          width: 6px;
+        }
+        .dash-card ul::-webkit-scrollbar-thumb,
+        .dash-card ol::-webkit-scrollbar-thumb {
+          background: var(--border-color);
+          border-radius: 10px;
+        }
+        .dash-card ul::-webkit-scrollbar-track,
+        .dash-card ol::-webkit-scrollbar-track {
+          background: var(--dark-bg);
+          border-radius: 10px;
+        }
+
+        .dash-card li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .dash-card li:last-child {
+            border-bottom: none;
+        }
+        
+        .dash-card .btn-full-width {
+            width: 100%;
+            margin-top: auto; /* Pushes button to the bottom of the card */
+            padding: 0.8rem;
+        }
+
+        /* Results History specific */
+        .result-score {
+            font-weight: 600;
+            color: var(--text-lighter);
+        }
+        .result-score .pass { color: #50E3C2; }
+        .result-score .fail { color: #E35050; }
+        
+        /* Exam List specific */
+        .exam-list-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .exam-list .btn-small {
+            padding: 0.3rem 0.8rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* ============================================ */
+        /* === 6. MODAL (POPUP) STYLES === */
+        /* ============================================ */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .modal-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 2.5rem;
+            width: 90%;
+            max-width: 600px; /* Increased max-width for forms */
+            color: var(--text-lighter);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            transform: scale(0.95);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 2.2rem;
+            color: var(--text-light);
+            cursor: pointer;
+        }
+
+        .modal-card h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--text-lighter);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            color: var(--text-lighter);
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(121, 172, 233, 0.5);
+        }
+
+        /* New styles for question bank list in modal */
+        #question-bank-list {
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .form-group-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .form-group-checkbox:last-child {
+            border-bottom: none;
+        }
+
+        .form-group-checkbox input[type="checkbox"] {
+            width: auto;
+            margin-top: 0.25rem;
+            flex-shrink: 0;
+        }
+
+        .form-group-checkbox label {
+            display: flex;
+            flex-direction: column;
+            font-weight: 500;
+            margin-bottom: 0; /* Override default */
+            cursor: pointer;
+        }
+
+        .form-group-checkbox label small {
+            font-size: 0.8rem;
+            color: var(--primary-color);
+            font-style: italic;
+            font-weight: 400;
+            margin-top: 2px;
+        }
+        
+        #open-add-question-modal-from-create {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        /* End of new styles */
+
+        .btn-modal {
+            width: 100%;
+            padding: 0.8rem;
+            font-size: 1rem;
+            background: var(--secondary-color);
+            color: var(--dark-bg);
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        /* ============================================ */
+        /* === 7. CREATE EXAM PAGE STYLES === */
+        /* ============================================ */
+        .create-exam-page {
+            display: none;
+        }
+        
+        .create-exam-page.active {
+            display: block;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .page-header h1 {
+            color: var(--text-lighter);
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .back-btn {
+            background: var(--secondary-color);
+            color: var(--dark-bg);
+            padding: 0.7rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .create-exam-form {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-bank-section {
+            margin-top: 2rem;
+        }
+        
+        .question-bank-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        .question-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        .question-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .question-item:last-child {
+            border-bottom: none;
+        }
+        
+        .question-content {
+            flex: 1;
+        }
+        
+        .question-meta {
+            font-size: 0.85rem;
+            color: var(--primary-color);
+            margin-top: 0.5rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo">AptitudePro</a>
+            <div class="hamburger" id="hamburger-menu">&#9776;</div>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#" data-page="dashboard">Home</a></li>
+                <li><a href="#" data-page="question-bank">Question Bank</a></li>
+                <li class="auth-placeholder"></li>
+            </ul>
+            
+            <div class="auth-buttons" id="auth-buttons">
+                <a href="#" class="profile-link">My Profile</a>
+                <a href="#" class="btn btn-secondary" id="logout-button">Logout</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- Main Dashboard Page -->
+<main id="dashboard-page" class="dashboard-page active">
+    <section class="dashboard-welcome container">
+        <h1>Welcome back, Teacher!</h1>
+        <p>Yahan aap exams manage kar sakte hain aur student progress dekh sakte hain.</p>
+    </section>
+    
+    <section class="dashboard-grid container">
+    
+        <div class="dash-card">
+            <h3>Aapke Stats</h3>
+            <div class="stat-summary-grid">
+                <div class="stat-card">
+                    <h4>Total Exams Created</h4>
+                    <p>5</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Total Questions Added</h4>
+                    <p>82</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dash-card cta-card">
+            <h3>Naya Exam Banayein</h3>
+            <p>Ek naya exam set configure karein aur students ko assign karein.</p>
+            <a href="#" class="btn btn-cta" id="open-create-exam-page">Create New Exam</a>
+        </div>
+    
+        <div class="dash-card results-history">
+            <h3>Recent Student Results (Aapke Exams)</h3>
+            <ul>
+                <li>
+                    <span>Rohan Sharma - Quant Set 5</span>
+                    <span class="result-score pass">85%</span>
+                </li>
+                <li>
+                    <span>Priya Singh - Logical Set 2</span>
+                    <span class="result-score fail">55%</span>
+                </li>
+                <li>
+                    <span>Rohan Sharma - Verbal Set 1</span>
+                    <span class="result-score pass">90%</span>
+                </li>
+                <li>
+                    <span>Amit Kumar - Quant Set 5</span>
+                    <span class="result-score pass">72%</span>
+                </li>
+                <li>
+                    <span>Sneha Patil - Logical Set 2</span>
+                    <span class="result-score pass">70%</span>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="dash-card exam-list">
+            <h3>Aapke Banaye Exams</h3>
+            <ul>
+                <li>
+                    <span>Quantitative Aptitude - Set 5</span>
+                    <div class="exam-list-buttons">
+                        <a href="#" class="btn btn-primary btn-small">Results</a>
+                        <a href="#" class="btn btn-secondary btn-small">Edit</a>
+                    </div>
+                </li>
+                <li>
+                    <span>Logical Reasoning - Set 2</span>
+                    <div class="exam-list-buttons">
+                        <a href="#" class="btn btn-primary btn-small">Results</a>
+                        <a href="#" class="btn btn-secondary btn-small">Edit</a>
+                    </div>
+                </li>
+                <li>
+                    <span>Verbal Ability - Set 1</span>
+                    <div class="exam-list-buttons">
+                        <a href="#" class="btn btn-primary btn-small">Results</a>
+                        <a href="#" class="btn btn-secondary btn-small">Edit</a>
+                    </div>
+                </li>
+                <li>
+                    <span>Quantitative Aptitude - Set 4</span>
+                    <div class="exam-list-buttons">
+                        <a href="#" class="btn btn-primary btn-small">Results</a>
+                        <a href="#" class="btn btn-secondary btn-small">Edit</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="dash-card">
+            <h3>Contribute Question</h3>
+            <p>Question bank mein naye sawaal add karein taaki woh future exams mein aa sakein.</p>
+            <button class="btn btn-secondary btn-full-width" id="open-add-question-modal">Add New Question</button>
+        </div>
+    
+    </section>
+</main>
+
+<!-- Create Exam Page -->
+<section id="create-exam-page" class="create-exam-page container">
+    <div class="page-header">
+        <h1>Create New Exam</h1>
+        <a href="#" class="back-btn" id="back-to-dashboard">← Back to Dashboard</a>
+    </div>
+    
+    <form id="create-exam-form" class="create-exam-form">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="exam-title">Exam Title</label>
+                <input type="text" id="exam-title" placeholder="e.g., Quantitative Aptitude - Set 6" required>
+            </div>
+            <div class="form-group">
+                <label for="exam-duration">Duration (in minutes)</label>
+                <input type="number" id="exam-duration" value="30" required>
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="exam-category">Category</label>
+                <select id="exam-category" required>
+                    <option value="">-- Select Category --</option>
+                    <option value="quantitative">Quantitative Aptitude</option>
+                    <option value="logical">Logical Reasoning</option>
+                    <option value="verbal">Verbal Ability</option>
+                    <option value="mixed">Mixed</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="exam-passing">Passing Percentage</label>
+                <input type="number" id="exam-passing" min="0" max="100" value="60" required>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="exam-description">Description (Optional)</label>
+            <textarea id="exam-description" placeholder="Exam ke baare mein additional details..."></textarea>
+        </div>
+        
+        <div class="question-bank-section">
+            <h3>Select Questions from Bank</h3>
+            <div class="question-list" id="question-bank-list-page">
+                <!-- Questions will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button type="button" class="btn btn-secondary" id="add-question-from-page">Add New Question to Bank</button>
+            <button type="submit" class="btn btn-primary">Create Exam with Selected Questions</button>
+        </div>
+    </form>
+</section>
+
+<!-- Modal 2: Add Question -->
+<div class="modal-overlay" id="add-question-modal">
+    <div class="modal-card">
+        <span class="close-modal">&times;</span>
+        <h2>Add New Question</h2>
+        <form id="add-question-form">
+            <div class="form-group">
+                <label for="q-category">Subject / Category</label>
+                <input type="text" id="q-category" placeholder="e.g., Logical Reasoning" required>
+            </div>
+            <div class="form-group">
+                <label for="q-text">Question Text</label>
+                <textarea id="q-text" placeholder="Sawaal yahan type karein..." required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="q-option1">Option 1</label>
+                <input type="text" id="q-option1" required>
+            </div>
+            <div class="form-group">
+                <label for="q-option2">Option 2</label>
+                <input type="text" id="q-option2" required>
+            </div>
+            <div class="form-group">
+                <label for="q-option3">Option 3</label>
+                <input type="text" id="q-option3" required>
+            </div>
+            <div class="form-group">
+                <label for="q-option4">Option 4</label>
+                <input type="text" id="q-option4" required>
+            </div>
+            <div class="form-group">
+                <label for="q-correct-option">Correct Option</label>
+                <select id="q-correct-option" required>
+                    <option value="">-- Select Correct Answer --</option>
+                    <option value="1">Option 1</option>
+                    <option value="2">Option 2</option>
+                    <option value="3">Option 3</option>
+                    <option value="4">Option 4</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-modal">Add to Question Bank</button>
+        </form>
+    </div>
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // Mock Database of Questions
+    const mockQuestionBank = [
+        { id: 'q1', text: 'What is 2 + 2?', createdBy: 'Teacher Amit', category: 'Quantitative' },
+        { id: 'q2', text: 'What is the capital of France?', createdBy: 'Teacher Priya', category: 'General Knowledge' },
+        { id: 'q3', text: 'Which planet is known as the Red Planet?', createdBy: 'Teacher Amit', category: 'Science' },
+        { id: 'q4', text: 'Who wrote \'Hamlet\'?', createdBy: 'Teacher Priya', category: 'Literature' },
+        { id: 'q5', text: 'What is the largest ocean on Earth?', createdBy: 'Teacher Ramesh', category: 'Geography' },
+        { id: 'q6', text: 'Solve for x: 2x + 3 = 11', createdBy: 'Teacher Amit', category: 'Quantitative' }
+    ];
+
+    /* --- Page Navigation --- */
+    const dashboardPage = document.getElementById('dashboard-page');
+    const createExamPage = document.getElementById('create-exam-page');
+    
+    const openCreateExamBtn = document.getElementById('open-create-exam-page');
+    const backToDashboardBtn = document.getElementById('back-to-dashboard');
+    
+    if (openCreateExamBtn) {
+        openCreateExamBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            dashboardPage.classList.remove('active');
+            createExamPage.classList.add('active');
+            populateQuestionBankListPage(); // Call function to fill the list on the page
+        });
+    }
+    
+    if (backToDashboardBtn) {
+        backToDashboardBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            createExamPage.classList.remove('active');
+            dashboardPage.classList.add('active');
+        });
+    }
+
+    /* --- Responsive Menu Code --- */
+    const hamburgerMenu = document.getElementById('hamburger-menu');
+    const navLinks = document.getElementById('nav-links');
+    const authButtons = document.getElementById('auth-buttons');
+    const authPlaceholder = navLinks.querySelector('.auth-placeholder');
+
+    function checkScreenSize() {
+        if (window.innerWidth <= 768) {
+            if (authPlaceholder && authButtons && !authPlaceholder.contains(authButtons)) {
+                authPlaceholder.appendChild(authButtons);
+                authButtons.classList.add('active');
+            }
+        } else {
+            const container = document.querySelector('.navbar .container');
+            if (authPlaceholder && authButtons && authPlaceholder.contains(authButtons)) {
+                container.appendChild(authButtons);
+                authButtons.classList.remove('active');
+            }
+            navLinks.classList.remove('active');
+        }
+    }
+
+    hamburgerMenu.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+    });
+
+    window.addEventListener('resize', checkScreenSize);
+    checkScreenSize();
+
+    /* --- Modal (Popup) Code --- */
+    const addQuestionModal = document.getElementById('add-question-modal');
+    
+    const openAddQuestionBtn = document.getElementById('open-add-question-modal');
+    const addQuestionFromPageBtn = document.getElementById('add-question-from-page');
+    
+    const closeButtons = document.querySelectorAll('.close-modal');
+
+    function openModal(modal) {
+        if (modal) modal.classList.add('active');
+    }
+
+    function closeModal(modal) {
+        if (modal) modal.classList.remove('active');
+    }
+    
+    // Open Modals
+    if (openAddQuestionBtn) {
+        openAddQuestionBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal(addQuestionModal);
+        });
+    }
+
+    // Open "Add Question" from "Create Exam" page
+    if (addQuestionFromPageBtn) {
+        addQuestionFromPageBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal(addQuestionModal);
+        });
+    }
+
+    // Close Modals (generic)
+    closeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            closeModal(button.closest('.modal-overlay'));
+        });
+    });
+
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                closeModal(overlay);
+            }
+        });
+    });
+
+    // Form Submissions (Mock)
+    document.getElementById('create-exam-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const title = document.getElementById('exam-title').value;
+        const duration = document.getElementById('exam-duration').value;
+        const category = document.getElementById('exam-category').value;
+        const passing = document.getElementById('exam-passing').value;
+        
+        const selectedQuestions = [];
+        document.querySelectorAll('#question-bank-list-page input[type="checkbox"]:checked').forEach(cb => {
+            selectedQuestions.push(cb.value);
+        });
+
+        console.log('Creating Exam with...');
+        console.log('Title:', title);
+        console.log('Duration:', duration);
+        console.log('Category:', category);
+        console.log('Passing Percentage:', passing);
+        console.log('Selected Question IDs:', selectedQuestions);
+
+        if (selectedQuestions.length === 0) {
+            alert("Please select at least one question for the exam!");
+            return;
+        }
+
+        // Success message and redirect
+        alert(`Exam "${title}" successfully created!`);
+        createExamPage.classList.remove('active');
+        dashboardPage.classList.add('active');
+    });
+    
+    document.getElementById('add-question-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        console.log('Adding Question...');
+        // Add form data collection logic here
+        // REAL APP: Yahan data database mein save hoga...
+        // ...aur fir hum question bank list ko refresh karenge.
+        // For now, just logging:
+        const newQ = {
+            id: `q${mockQuestionBank.length + 1}`,
+            text: document.getElementById('q-text').value,
+            createdBy: 'You (Teacher)', // Placeholder
+            category: document.getElementById('q-category').value
+        };
+        mockQuestionBank.push(newQ); // Add to mock DB
+        console.log('New question added:', newQ);
+        
+        // Form reset logic
+        document.getElementById('add-question-form').reset();
+
+        closeModal(addQuestionModal);
+        
+        // Refresh the list in the "Create Exam" page if it's open
+        populateQuestionBankListPage();
+    });
+
+    // New Function: Populate Question List in Create Exam Page
+    function populateQuestionBankListPage() {
+        const listContainer = document.getElementById('question-bank-list-page');
+        listContainer.innerHTML = ''; // Clear old list
+
+        if (mockQuestionBank.length === 0) {
+            listContainer.innerHTML = '<p>Question bank khaali hai. Pehle naye questions add karein.</p>';
+            return;
+        }
+
+        mockQuestionBank.forEach(q => {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'question-item';
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = `chk-page-${q.id}`;
+            checkbox.value = q.id;
+
+            const label = document.createElement('label');
+            label.htmlFor = `chk-page-${q.id}`;
+            
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question-content';
+            
+            const questionText = document.createElement('div');
+            questionText.textContent = q.text;
+            
+            const creatorText = document.createElement('div');
+            creatorText.className = 'question-meta';
+            creatorText.textContent = `Category: ${q.category} | Added by: ${q.createdBy}`;
+            
+            questionDiv.appendChild(questionText);
+            questionDiv.appendChild(creatorText);
+
+            itemDiv.appendChild(checkbox);
+            itemDiv.appendChild(questionDiv);
+            
+            listContainer.appendChild(itemDiv);
+        });
+    }
+
+});
+</script>
+
+</body>
+</html>
