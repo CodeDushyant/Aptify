@@ -27,3 +27,27 @@ Backend: Node.js / Express
 Database: MongoDB / SQL
 
 Hosting: Vercel / Netlify / Render (optional)
+
+
+
+💻 Installation
+
+Clone the repo
+
+git clone https://github.com/your-username/aptify.git
+
+
+Install dependencies
+
+npm install
+
+
+Start the server
+
+npm start
+
+
+Open in browser
+
+http://localhost:3000
+
