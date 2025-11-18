@@ -15,3 +15,15 @@ Instant Results – View score, accuracy, and time taken
 Responsive UI – Works smoothly on mobile, tablet, and desktop
 
 Admin Panel (Optional) – Add, edit, or remove questions
+
+
+
+🛠️ Tech Stack
+
+Frontend: HTML, CSS, JavaScript / React / Tailwind CSS
+
+Backend: Node.js / Express
+
+Database: MongoDB / SQL
+
+Hosting: Vercel / Netlify / Render (optional)
