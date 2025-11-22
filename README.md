@@ -53,18 +53,8 @@ http://localhost:3000
 
 
 
-🤝 Contributing
 
-Contributions are always welcome!
-Just follow these steps:
 
-Fork the repo
-
-Create a feature branch
-
-Commit changes
-
-Open a pull request
 
 
 
